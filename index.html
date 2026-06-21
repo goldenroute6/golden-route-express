@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Golden Route Express - Package Tracking & Shipping</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <span class="logo-icon">🚚</span>
+                <a href="#home">Golden Route Express</a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#tracker" class="nav-link">Track Package</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+                <li><a href="#login" class="nav-link login-btn">Login</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Golden Route Express</h1>
+            <p>Track Your Packages in Real-Time</p>
+            <button class="cta-button" onclick="scrollToTracker()">Track Now</button>
+        </div>
+    </section>
+
+    <section id="tracker" class="tracker-section">
+        <div class="container">
+            <h2>Track Your Package</h2>
+            <div class="tracker-card">
+                <input type="text" id="trackingNumber" placeholder="Enter tracking number (e.g., GRE-2024-001)" class="tracking-input">
+                <button onclick="trackPackage()" class="track-button">Search</button>
+            </div>
+
+            <div id="trackingResults" class="tracking-results" style="display: none;">
+                <h3>Package Status</h3>
+                <div class="package-info">
+                    <div class="info-item">
+                        <span class="label">Tracking Number:</span>
+                        <span id="resultTrackingNumber" class="value"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Status:</span>
+                        <span id="resultStatus" class="value status-badge"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Current Location:</span>
+                        <span id="resultLocation" class="value"></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="label">Estimated Delivery:</span>
+                        <span id="resultDelivery" class="value"></span>
+                    </div>
+                </div>
+
+                <div class="timeline">
+                    <h4>Shipment Timeline</h4>
+                    <div id="timelineEvents" class="timeline-events"></div>
+                </div>
+            </div>
+
+            <div id="noResults" class="message error" style="display: none;">
+                Package not found. Please check your tracking number and try again.
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="about-section">
+        <div class="container">
+            <h2>About Golden Route Express</h2>
+            <div class="about-content">
+                <div class="about-item">
+                    <h3>🌍 Global Reach</h3>
+                    <p>We deliver packages to over 50 countries with reliable and fast shipping solutions.</p>
+                </div>
+                <div class="about-item">
+                    <h3>📦 Secure Handling</h3>
+                    <p>Your packages are handled with care using advanced tracking and security systems.</p>
+                </div>
+                <div class="about-item">
+                    <h3>⚡ Fast Delivery</h3>
+                    <p>Express shipping options available for urgent deliveries worldwide.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <h2>Contact Us</h2>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <h4>📧 Email</h4>
+                    <p>support@goldenrouteexpress.com</p>
+                </div>
+                <div class="contact-item">
+                    <h4>📞 Phone</h4>
+                    <p>1-800-GOLDEN-1 (1-800-465-3361)</p>
+                </div>
+                <div class="contact-item">
+                    <h4>🏢 Address</h4>
+                    <p>123 Express Lane, Logistics City, LC 12345</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Golden Route Express. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#privacy">Privacy Policy</a>
+                <a href="#terms">Terms of Service</a>
+                <a href="#sitemap">Sitemap</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/tracker.js"></script>
+</body>
+</html>
