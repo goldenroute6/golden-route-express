@@ -8,24 +8,30 @@
     <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
-    <nav class="navbar">
+    <nav class="navbar" aria-label="Primary">
         <div class="navbar-container">
             <div class="navbar-logo">
                 <span class="logo-icon">🚚</span>
                 <a href="#home">Golden Route Express</a>
             </div>
-            <ul class="nav-menu">
+            <ul id="primary-navigation" class="nav-menu">
                 <li><a href="#home" class="nav-link active">Home</a></li>
                 <li><a href="#tracker" class="nav-link">Track Package</a></li>
                 <li><a href="#about" class="nav-link">About</a></li>
                 <li><a href="#contact" class="nav-link">Contact</a></li>
                 <li><a href="#login" class="nav-link login-btn">Login</a></li>
             </ul>
-            <div class="hamburger">
+            <button
+                type="button"
+                class="hamburger"
+                aria-label="Toggle navigation menu"
+                aria-expanded="false"
+                aria-controls="primary-navigation"
+            >
                 <span></span>
                 <span></span>
                 <span></span>
-            </div>
+            </button>
         </div>
     </nav>
 
@@ -33,7 +39,7 @@
         <div class="hero-content">
             <h1>Golden Route Express</h1>
             <p>Track Your Packages in Real-Time</p>
-            <button class="cta-button" onclick="scrollToTracker()">Track Now</button>
+            <button id="scrollToTrackerButton" type="button" class="cta-button">Track Now</button>
         </div>
     </section>
 
@@ -41,11 +47,12 @@
         <div class="container">
             <h2>Track Your Package</h2>
             <div class="tracker-card">
-                <input type="text" id="trackingNumber" placeholder="Enter tracking number (e.g., GRE-2024-001)" class="tracking-input">
-                <button onclick="trackPackage()" class="track-button">Search</button>
+                <label class="visually-hidden" for="trackingNumber">Tracking number</label>
+                <input type="text" id="trackingNumber" placeholder="Enter tracking number (e.g., GRE-2024-001)" class="tracking-input" autocomplete="off">
+                <button id="trackPackageButton" type="button" class="track-button">Search</button>
             </div>
 
-            <div id="trackingResults" class="tracking-results" style="display: none;">
+            <div id="trackingResults" class="tracking-results" style="display: none;" aria-live="polite">
                 <h3>Package Status</h3>
                 <div class="package-info">
                     <div class="info-item">
@@ -72,7 +79,7 @@
                 </div>
             </div>
 
-            <div id="noResults" class="message error" style="display: none;">
+            <div id="noResults" class="message error" style="display: none;" aria-live="polite">
                 Package not found. Please check your tracking number and try again.
             </div>
         </div>
