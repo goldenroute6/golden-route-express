@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Golden Route Express - Package Tracking & Shipping</title>
+    <title>Golden Route Express - Cargo Shipping & Package Tracking</title>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/responsive.css">
 </head>
@@ -11,11 +11,12 @@
     <nav class="navbar">
         <div class="navbar-container">
             <div class="navbar-logo">
-                <span class="logo-icon">🚚</span>
+                <span class="logo-icon">✈️</span>
                 <a href="#home">Golden Route Express</a>
             </div>
             <ul class="nav-menu">
                 <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#ship" class="nav-link">Ship Cargo</a></li>
                 <li><a href="#tracker" class="nav-link">Track Package</a></li>
                 <li><a href="#about" class="nav-link">About</a></li>
                 <li><a href="#contact" class="nav-link">Contact</a></li>
@@ -30,10 +31,130 @@
     </nav>
 
     <section id="home" class="hero">
+        <div class="hero-vehicles">
+            <span class="hero-plane">✈️</span>
+            <span class="hero-ship">🚢</span>
+            <span class="hero-plane hero-plane-2">✈️</span>
+        </div>
         <div class="hero-content">
             <h1>Golden Route Express</h1>
-            <p>Track Your Packages in Real-Time</p>
-            <button class="cta-button" onclick="scrollToTracker()">Track Now</button>
+            <p>Ship & Track Your Cargo by Air &amp; Sea</p>
+            <div class="hero-badges">
+                <span class="hero-badge">✈️ Air Freight</span>
+                <span class="hero-badge">🚢 Sea Freight</span>
+            </div>
+            <div class="hero-buttons">
+                <button class="cta-button" onclick="scrollToSection('ship')">Ship Now</button>
+                <button class="cta-button cta-secondary" onclick="scrollToSection('tracker')">Track Package</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="ship" class="ship-section">
+        <div class="container">
+            <h2>Ship Your Cargo</h2>
+            <p class="section-subtitle">Fast, secure, and reliable shipping to destinations worldwide</p>
+
+            <div class="service-cards">
+                <div class="service-card">
+                    <span class="service-icon">✈️</span>
+                    <h3>Air Express</h3>
+                    <p>2–3 business days</p>
+                    <span class="service-tag">Popular</span>
+                </div>
+                <div class="service-card featured">
+                    <span class="service-icon">🚢</span>
+                    <h3>Sea Freight</h3>
+                    <p>Heavy & bulk cargo</p>
+                    <span class="service-tag">Large Loads</span>
+                </div>
+                <div class="service-card">
+                    <span class="service-icon">📦</span>
+                    <h3>Standard</h3>
+                    <p>5–7 business days</p>
+                    <span class="service-tag">Economy</span>
+                </div>
+            </div>
+
+            <div class="ship-form-card">
+                <form id="shippingForm" onsubmit="bookShipment(event)" novalidate>
+                    <div class="form-columns">
+                        <div class="form-column">
+                            <h3 class="form-section-title">📤 Sender</h3>
+                            <div class="form-group">
+                                <label for="senderName">Full Name</label>
+                                <input type="text" id="senderName" placeholder="Jane Smith" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="senderCity">City</label>
+                                <input type="text" id="senderCity" placeholder="New York, NY" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="senderCountry">Country</label>
+                                <input type="text" id="senderCountry" placeholder="USA" required>
+                            </div>
+                        </div>
+
+                        <div class="form-column">
+                            <h3 class="form-section-title">📥 Recipient</h3>
+                            <div class="form-group">
+                                <label for="recipientName">Full Name</label>
+                                <input type="text" id="recipientName" placeholder="John Doe" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="recipientCity">City</label>
+                                <input type="text" id="recipientCity" placeholder="London" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="recipientCountry">Country</label>
+                                <input type="text" id="recipientCountry" placeholder="UK" required>
+                            </div>
+                        </div>
+
+                        <div class="form-column">
+                            <h3 class="form-section-title">📋 Cargo Details</h3>
+                            <div class="form-group">
+                                <label for="cargoDescription">Description</label>
+                                <input type="text" id="cargoDescription" placeholder="e.g. Electronics, Clothing" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="cargoWeight">Weight (kg)</label>
+                                <input type="number" id="cargoWeight" placeholder="e.g. 5.0" min="0.1" step="0.1" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="shippingType">Shipping Type</label>
+                                <select id="shippingType" required>
+                                    <option value="">Select a service…</option>
+                                    <option value="air">Air Express (2–3 days)</option>
+                                    <option value="sea">Sea Freight (bulk cargo)</option>
+                                    <option value="standard">Standard (5–7 days)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="shipFormError" class="message error" style="display:none;"></div>
+
+                    <div class="form-submit">
+                        <button type="submit" class="cta-button">Book Shipment</button>
+                    </div>
+                </form>
+
+                <div id="shipConfirmation" class="ship-confirmation" style="display:none;">
+                    <div class="confirm-icon">✅</div>
+                    <h3>Shipment Booked!</h3>
+                    <p>Your cargo has been registered. Use the tracking number below to follow its progress.</p>
+                    <div class="confirm-tracking">
+                        <span class="label">Tracking Number:</span>
+                        <span id="confirmTrackingNumber" class="confirm-number"></span>
+                    </div>
+                    <div class="confirm-details" id="confirmDetails"></div>
+                    <div class="confirm-actions">
+                        <button class="track-button" onclick="trackBookedShipment()">Track This Shipment</button>
+                        <button class="cta-button cta-secondary" onclick="resetShippingForm()">Book Another</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -83,16 +204,16 @@
             <h2>About Golden Route Express</h2>
             <div class="about-content">
                 <div class="about-item">
-                    <h3>🌍 Global Reach</h3>
-                    <p>We deliver packages to over 50 countries with reliable and fast shipping solutions.</p>
+                    <h3>✈️ Air Freight</h3>
+                    <p>Fast air cargo services connecting over 50 countries with express delivery options worldwide.</p>
                 </div>
                 <div class="about-item">
-                    <h3>📦 Secure Handling</h3>
-                    <p>Your packages are handled with care using advanced tracking and security systems.</p>
+                    <h3>🚢 Sea Freight</h3>
+                    <p>Reliable sea shipping for heavy and bulk cargo, handled with care and advanced tracking systems.</p>
                 </div>
                 <div class="about-item">
                     <h3>⚡ Fast Delivery</h3>
-                    <p>Express shipping options available for urgent deliveries worldwide.</p>
+                    <p>Express shipping options available for urgent deliveries worldwide — by air or sea.</p>
                 </div>
             </div>
         </div>
@@ -104,11 +225,7 @@
             <div class="contact-info">
                 <div class="contact-item">
                     <h4>📧 Email</h4>
-                    <p>support@goldenrouteexpress.com</p>
-                </div>
-                <div class="contact-item">
-                    <h4>📞 Phone</h4>
-                    <p>1-800-GOLDEN-1 (1-800-465-3361)</p>
+                    <p><a href="mailto:expressgoldenroute@gmail.com">expressgoldenroute@gmail.com</a></p>
                 </div>
                 <div class="contact-item">
                     <h4>🏢 Address</h4>
@@ -120,7 +237,7 @@
 
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2024 Golden Route Express. All rights reserved.</p>
+            <p>&copy; 2026 Golden Route Express. All rights reserved.</p>
             <div class="footer-links">
                 <a href="#privacy">Privacy Policy</a>
                 <a href="#terms">Terms of Service</a>
@@ -130,6 +247,7 @@
     </footer>
 
     <script src="js/main.js"></script>
+    <script src="js/shipping.js"></script>
     <script src="js/tracker.js"></script>
 </body>
 </html>
