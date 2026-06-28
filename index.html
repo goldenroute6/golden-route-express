@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Golden Route Express - Package Tracking & Shipping</title>
+    <title>Golden Route Express - Cargo Shipping & Package Tracking</title>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/responsive.css">
 </head>
@@ -16,6 +16,7 @@
             </div>
             <ul class="nav-menu">
                 <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#ship" class="nav-link">Ship Cargo</a></li>
                 <li><a href="#tracker" class="nav-link">Track Package</a></li>
                 <li><a href="#about" class="nav-link">About</a></li>
                 <li><a href="#contact" class="nav-link">Contact</a></li>
@@ -32,8 +33,119 @@
     <section id="home" class="hero">
         <div class="hero-content">
             <h1>Golden Route Express</h1>
-            <p>Track Your Packages in Real-Time</p>
-            <button class="cta-button" onclick="scrollToTracker()">Track Now</button>
+            <p>Ship & Track Your Cargo Worldwide</p>
+            <div class="hero-buttons">
+                <button class="cta-button" onclick="scrollToSection('ship')">Ship Now</button>
+                <button class="cta-button cta-secondary" onclick="scrollToSection('tracker')">Track Package</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="ship" class="ship-section">
+        <div class="container">
+            <h2>Ship Your Cargo</h2>
+            <p class="section-subtitle">Fast, secure, and reliable shipping to destinations worldwide</p>
+
+            <div class="service-cards">
+                <div class="service-card">
+                    <span class="service-icon">📦</span>
+                    <h3>Standard</h3>
+                    <p>5–7 business days</p>
+                    <span class="service-tag">Economy</span>
+                </div>
+                <div class="service-card featured">
+                    <span class="service-icon">⚡</span>
+                    <h3>Express</h3>
+                    <p>2–3 business days</p>
+                    <span class="service-tag">Popular</span>
+                </div>
+                <div class="service-card">
+                    <span class="service-icon">🚢</span>
+                    <h3>Freight</h3>
+                    <p>Heavy & bulk cargo</p>
+                    <span class="service-tag">Large Loads</span>
+                </div>
+            </div>
+
+            <div class="ship-form-card">
+                <form id="shippingForm" onsubmit="bookShipment(event)" novalidate>
+                    <div class="form-columns">
+                        <div class="form-column">
+                            <h3 class="form-section-title">📤 Sender</h3>
+                            <div class="form-group">
+                                <label for="senderName">Full Name</label>
+                                <input type="text" id="senderName" placeholder="Jane Smith" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="senderCity">City</label>
+                                <input type="text" id="senderCity" placeholder="New York, NY" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="senderCountry">Country</label>
+                                <input type="text" id="senderCountry" placeholder="USA" required>
+                            </div>
+                        </div>
+
+                        <div class="form-column">
+                            <h3 class="form-section-title">📥 Recipient</h3>
+                            <div class="form-group">
+                                <label for="recipientName">Full Name</label>
+                                <input type="text" id="recipientName" placeholder="John Doe" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="recipientCity">City</label>
+                                <input type="text" id="recipientCity" placeholder="London" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="recipientCountry">Country</label>
+                                <input type="text" id="recipientCountry" placeholder="UK" required>
+                            </div>
+                        </div>
+
+                        <div class="form-column">
+                            <h3 class="form-section-title">📋 Cargo Details</h3>
+                            <div class="form-group">
+                                <label for="cargoDescription">Description</label>
+                                <input type="text" id="cargoDescription" placeholder="e.g. Electronics, Clothing" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="cargoWeight">Weight (kg)</label>
+                                <input type="number" id="cargoWeight" placeholder="e.g. 5.0" min="0.1" step="0.1" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="shippingType">Shipping Type</label>
+                                <select id="shippingType" required>
+                                    <option value="">Select a service…</option>
+                                    <option value="standard">Standard (5–7 days)</option>
+                                    <option value="express">Express (2–3 days)</option>
+                                    <option value="freight">Freight (bulk cargo)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="shipFormError" class="message error" style="display:none;"></div>
+
+                    <div class="form-submit">
+                        <button type="submit" class="cta-button">Book Shipment</button>
+                    </div>
+                </form>
+
+                <div id="shipConfirmation" class="ship-confirmation" style="display:none;">
+                    <div class="confirm-icon">✅</div>
+                    <h3>Shipment Booked!</h3>
+                    <p>Your cargo has been registered. Use the tracking number below to follow its progress.</p>
+                    <div class="confirm-tracking">
+                        <span class="label">Tracking Number:</span>
+                        <span id="confirmTrackingNumber" class="confirm-number"></span>
+                    </div>
+                    <div class="confirm-details" id="confirmDetails"></div>
+                    <div class="confirm-actions">
+                        <button class="track-button" onclick="trackBookedShipment()">Track This Shipment</button>
+                        <button class="cta-button cta-secondary" onclick="resetShippingForm()">Book Another</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -130,6 +242,7 @@
     </footer>
 
     <script src="js/main.js"></script>
+    <script src="js/shipping.js"></script>
     <script src="js/tracker.js"></script>
 </body>
 </html>
