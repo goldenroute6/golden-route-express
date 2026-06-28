@@ -11,7 +11,7 @@
     <nav class="navbar">
         <div class="navbar-container">
             <div class="navbar-logo">
-                <span class="logo-icon">🚚</span>
+                <span class="logo-icon">✈️</span>
                 <a href="#home">Golden Route Express</a>
             </div>
             <ul class="nav-menu">
@@ -31,9 +31,18 @@
     </nav>
 
     <section id="home" class="hero">
+        <div class="hero-vehicles">
+            <span class="hero-plane">✈️</span>
+            <span class="hero-ship">🚢</span>
+            <span class="hero-plane hero-plane-2">✈️</span>
+        </div>
         <div class="hero-content">
             <h1>Golden Route Express</h1>
-            <p>Ship & Track Your Cargo Worldwide</p>
+            <p>Ship & Track Your Cargo by Air &amp; Sea</p>
+            <div class="hero-badges">
+                <span class="hero-badge">✈️ Air Freight</span>
+                <span class="hero-badge">🚢 Sea Freight</span>
+            </div>
             <div class="hero-buttons">
                 <button class="cta-button" onclick="scrollToSection('ship')">Ship Now</button>
                 <button class="cta-button cta-secondary" onclick="scrollToSection('tracker')">Track Package</button>
@@ -48,22 +57,22 @@
 
             <div class="service-cards">
                 <div class="service-card">
+                    <span class="service-icon">✈️</span>
+                    <h3>Air Express</h3>
+                    <p>2–3 business days</p>
+                    <span class="service-tag">Popular</span>
+                </div>
+                <div class="service-card featured">
+                    <span class="service-icon">🚢</span>
+                    <h3>Sea Freight</h3>
+                    <p>Heavy & bulk cargo</p>
+                    <span class="service-tag">Large Loads</span>
+                </div>
+                <div class="service-card">
                     <span class="service-icon">📦</span>
                     <h3>Standard</h3>
                     <p>5–7 business days</p>
                     <span class="service-tag">Economy</span>
-                </div>
-                <div class="service-card featured">
-                    <span class="service-icon">⚡</span>
-                    <h3>Express</h3>
-                    <p>2–3 business days</p>
-                    <span class="service-tag">Popular</span>
-                </div>
-                <div class="service-card">
-                    <span class="service-icon">🚢</span>
-                    <h3>Freight</h3>
-                    <p>Heavy & bulk cargo</p>
-                    <span class="service-tag">Large Loads</span>
                 </div>
             </div>
 
@@ -116,9 +125,9 @@
                                 <label for="shippingType">Shipping Type</label>
                                 <select id="shippingType" required>
                                     <option value="">Select a service…</option>
+                                    <option value="air">Air Express (2–3 days)</option>
+                                    <option value="sea">Sea Freight (bulk cargo)</option>
                                     <option value="standard">Standard (5–7 days)</option>
-                                    <option value="express">Express (2–3 days)</option>
-                                    <option value="freight">Freight (bulk cargo)</option>
                                 </select>
                             </div>
                         </div>
@@ -195,16 +204,16 @@
             <h2>About Golden Route Express</h2>
             <div class="about-content">
                 <div class="about-item">
-                    <h3>🌍 Global Reach</h3>
-                    <p>We deliver packages to over 50 countries with reliable and fast shipping solutions.</p>
+                    <h3>✈️ Air Freight</h3>
+                    <p>Fast air cargo services connecting over 50 countries with express delivery options worldwide.</p>
                 </div>
                 <div class="about-item">
-                    <h3>📦 Secure Handling</h3>
-                    <p>Your packages are handled with care using advanced tracking and security systems.</p>
+                    <h3>🚢 Sea Freight</h3>
+                    <p>Reliable sea shipping for heavy and bulk cargo, handled with care and advanced tracking systems.</p>
                 </div>
                 <div class="about-item">
                     <h3>⚡ Fast Delivery</h3>
-                    <p>Express shipping options available for urgent deliveries worldwide.</p>
+                    <p>Express shipping options available for urgent deliveries worldwide — by air or sea.</p>
                 </div>
             </div>
         </div>
@@ -216,11 +225,7 @@
             <div class="contact-info">
                 <div class="contact-item">
                     <h4>📧 Email</h4>
-                    <p>support@goldenrouteexpress.com</p>
-                </div>
-                <div class="contact-item">
-                    <h4>📞 Phone</h4>
-                    <p>1-800-GOLDEN-1 (1-800-465-3361)</p>
+                    <p><a href="mailto:expressgoldenroute@gmail.com">expressgoldenroute@gmail.com</a></p>
                 </div>
                 <div class="contact-item">
                     <h4>🏢 Address</h4>
@@ -232,7 +237,7 @@
 
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2024 Golden Route Express. All rights reserved.</p>
+            <p>&copy; 2026 Golden Route Express. All rights reserved.</p>
             <div class="footer-links">
                 <a href="#privacy">Privacy Policy</a>
                 <a href="#terms">Terms of Service</a>
