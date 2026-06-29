@@ -3,6 +3,7 @@
     .form-columns       { grid-template-columns: repeat(2, 1fr); }
     .about-content      { grid-template-columns: repeat(2, 1fr); }
     .hero-content h1    { font-size: 3rem; }
+    .tracking-visuals   { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 768px) {
@@ -17,6 +18,9 @@
     .contact-info           { grid-template-columns: 1fr; }
     .ship-form-card         { padding: 1.5rem 1rem; }
     .confirm-tracking       { flex-direction: column; gap: 0.5rem; text-align: center; }
+    .progress-steps         { grid-template-columns: repeat(2, 1fr); }
+    .progress-panel-header,
+    .route-panel-header     { flex-direction: column; align-items: flex-start; }
 }
 
 @media (max-width: 480px) {
@@ -53,4 +57,7 @@
     .tracker-section,
     .about-section,
     .contact-section    { padding: 3rem 1rem; }
+
+    .progress-steps     { grid-template-columns: 1fr; }
+    .route-stop         { align-items: flex-start; }
 }

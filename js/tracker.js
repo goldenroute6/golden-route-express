@@ -50,11 +50,6 @@ function getShipmentProgress(record) {
         return progress;
     }
 
-    if (daysElapsed >= 4) {
-        progress.statusKey = 'in-transit';
-        return progress;
-    }
-
     if (daysElapsed >= 3) {
         progress.statusKey = 'in-transit';
         return progress;
@@ -114,6 +109,87 @@ function renderTimeline(events) {
     });
 }
 
+function renderProgressTracker(record) {
+    var stepsContainer = document.getElementById('progressSteps');
+    var progressPercent = document.getElementById('progressPercent');
+    var progressBarFill = document.getElementById('progressBarFill');
+    if (!stepsContainer || !progressPercent || !progressBarFill) {
+        return;
+    }
+
+    var steps = [
+        { label: 'Booked', day: 0 },
+        { label: 'Processed', day: 2 },
+        { label: 'In Transit', day: 3 },
+        { label: 'Destination Hub', day: 4 },
+        { label: 'Out for Delivery', day: 5 }
+    ];
+
+    stepsContainer.innerHTML = '';
+
+    var percentage = Math.min(100, Math.round((Math.min(record.daysElapsed, 5) / 5) * 100));
+    progressPercent.textContent = percentage + '% Complete';
+    progressBarFill.style.width = percentage + '%';
+
+    steps.forEach(function(step, index) {
+        var stepElement = document.createElement('div');
+        stepElement.className = 'progress-step';
+
+        if (record.daysElapsed > step.day || (record.daysElapsed >= 5 && step.day === 5)) {
+            stepElement.classList.add('complete');
+        }
+
+        if (record.daysElapsed >= step.day && record.daysElapsed < (steps[index + 1] ? steps[index + 1].day : 99)) {
+            stepElement.classList.add('active');
+        }
+
+        if (record.daysElapsed >= 5 && step.day === 5) {
+            stepElement.classList.add('active');
+        }
+
+        stepElement.innerHTML =
+            '<div class="progress-step-dot">' + (index + 1) + '</div>' +
+            '<div class="progress-step-label">' + step.label + '</div>';
+
+        stepsContainer.appendChild(stepElement);
+    });
+}
+
+function renderRouteMap(record) {
+    var routeMap = document.getElementById('routeMap');
+    var currentRouteLabel = document.getElementById('currentRouteLabel');
+    if (!routeMap || !currentRouteLabel) {
+        return;
+    }
+
+    var route = Array.isArray(record.route) ? record.route : [];
+    routeMap.innerHTML = '';
+    currentRouteLabel.textContent = record.currentLocation;
+
+    route.forEach(function(stop, index) {
+        var stopElement = document.createElement('div');
+        stopElement.className = 'route-stop';
+
+        if (record.daysElapsed >= stop.day) {
+            stopElement.classList.add('complete');
+        }
+
+        if (record.currentRouteStop && record.currentRouteStop.day === stop.day) {
+            stopElement.classList.add('active');
+        }
+
+        stopElement.innerHTML =
+            '<div class="route-stop-marker">' + (index + 1) + '</div>' +
+            '<div class="route-stop-content">' +
+                '<span class="route-stop-status">' + stop.status + '</span>' +
+                '<span class="route-stop-location">' + stop.location + '</span>' +
+            '</div>' +
+            '<span class="route-stop-day">Day ' + stop.day + '</span>';
+
+        routeMap.appendChild(stopElement);
+    });
+}
+
 function updateStatusBadge(element, statusKey, statusLabel) {
     element.className = 'value status-badge';
 
@@ -132,6 +208,8 @@ function showTrackingResult(record) {
     document.getElementById('resultLocation').textContent = record.currentLocation;
     document.getElementById('resultDelivery').textContent = record.estimatedDelivery;
 
+    renderProgressTracker(record);
+    renderRouteMap(record);
     renderTimeline(record.timeline || []);
 
     document.getElementById('trackingResults').style.display = 'block';
