@@ -1,1 +1,144 @@
-function trackPackage() { const trackingInput = document.getElementById('trackingNumber'); const trackingNumber = trackingInput.value.trim().toUpperCase(); if (!trackingNumber) { showMessage('Please enter a tracking number', 'error'); return; } const packages = JSON.parse(localStorage.getItem('packages') || '{}'); const package = packages[trackingNumber]; hideResults(); if (package) { displayPackageInfo(package); } else { showMessage('Package not found. Please check your tracking number and try again.', 'error'); } } function displayPackageInfo(packageData) { const resultsDiv = document.getElementById('trackingResults'); const trackingNumberEl = document.getElementById('resultTrackingNumber'); const statusEl = document.getElementById('resultStatus'); const locationEl = document.getElementById('resultLocation'); const deliveryEl = document.getElementById('resultDelivery'); const timelineEventsEl = document.getElementById('timelineEvents'); trackingNumberEl.textContent = packageData.trackingNumber; statusEl.textContent = getStatusText(packageData.status); statusEl.className = `value status-badge ${getStatusColor(packageData.status)}`; locationEl.textContent = packageData.currentLocation; deliveryEl.textContent = formatDate(packageData.estimatedDelivery); timelineEventsEl.innerHTML = ''; packageData.timeline.forEach((event, index) => { const eventEl = createTimelineEvent(event, index); timelineEventsEl.appendChild(eventEl); }); resultsDiv.style.display = 'block'; resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } function createTimelineEvent(event, index) { const eventDiv = document.createElement('div'); eventDiv.className = 'timeline-event'; const timeDiv = document.createElement('div'); timeDiv.className = 'event-time'; timeDiv.textContent = event.time; const descriptionDiv = document.createElement('div'); descriptionDiv.className = 'event-description'; const statusStrong = document.createElement('strong'); statusStrong.textContent = event.status; descriptionDiv.appendChild(statusStrong); const locationDiv = document.createElement('div'); locationDiv.className = 'event-location'; locationDiv.textContent = `${event.location}`; eventDiv.appendChild(timeDiv); eventDiv.appendChild(descriptionDiv); eventDiv.appendChild(locationDiv); return eventDiv; } function showMessage(message, type) { const resultsDiv = document.getElementById('trackingResults'); const noResultsDiv = document.getElementById('noResults'); resultsDiv.style.display = 'none'; noResultsDiv.style.display = 'none'; if (type === 'error') { noResultsDiv.textContent = message; noResultsDiv.style.display = 'block'; noResultsDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); } } function hideResults() { document.getElementById('trackingResults').style.display = 'none'; document.getElementById('noResults').style.display = 'none'; } window.trackPackage = trackPackage;
+function getStoredPackages() {
+    return JSON.parse(localStorage.getItem('packages') || '{}');
+}
+
+function saveStoredPackages(packages) {
+    localStorage.setItem('packages', JSON.stringify(packages));
+}
+
+function getElapsedDays(createdAt) {
+    var start = new Date(createdAt || new Date().toISOString());
+    var now = new Date();
+    var diffTime = now.getTime() - start.getTime();
+    return Math.max(0, Math.floor(diffTime / (1000 * 60 * 60 * 24)));
+}
+
+function getShipmentProgress(record) {
+    var daysElapsed = getElapsedDays(record.createdAt || record.bookedAt);
+    var progress = {
+        statusKey: 'booked',
+        statusLabel: 'Booked',
+        currentLocation: record.from,
+        daysElapsed: daysElapsed
+    };
+
+    if (daysElapsed >= 5) {
+        progress.statusKey = 'out-for-delivery';
+        progress.statusLabel = 'Out for Delivery';
+        progress.currentLocation = record.to;
+        return progress;
+    }
+
+    if (daysElapsed >= 2) {
+        progress.statusKey = 'processed';
+        progress.statusLabel = 'Processed';
+        progress.currentLocation = record.processingLocation || 'Origin Processing Center';
+    }
+
+    return progress;
+}
+
+function hydrateShipment(record) {
+    var hydrated = Object.assign({}, record);
+    var progress = getShipmentProgress(hydrated);
+
+    hydrated.daysElapsed = progress.daysElapsed;
+    hydrated.status = progress.statusKey;
+    hydrated.statusLabel = progress.statusLabel;
+    hydrated.currentLocation = progress.currentLocation;
+
+    if (typeof window.buildShipmentTimeline === 'function') {
+        hydrated.timeline = window.buildShipmentTimeline(hydrated);
+    } else if (!Array.isArray(hydrated.timeline)) {
+        hydrated.timeline = [];
+    }
+
+    return hydrated;
+}
+
+function renderTimeline(events) {
+    var timelineEvents = document.getElementById('timelineEvents');
+    timelineEvents.innerHTML = '';
+
+    events.forEach(function(event) {
+        var wrapper = document.createElement('div');
+        wrapper.className = 'timeline-event';
+
+        var time = document.createElement('div');
+        time.className = 'event-time';
+        time.textContent = event.time;
+
+        var description = document.createElement('div');
+        description.className = 'event-description';
+        description.innerHTML = '<strong>' + event.status + '</strong>';
+
+        var location = document.createElement('div');
+        location.className = 'event-location';
+        location.textContent = event.location;
+
+        wrapper.appendChild(time);
+        wrapper.appendChild(description);
+        wrapper.appendChild(location);
+        timelineEvents.appendChild(wrapper);
+    });
+}
+
+function updateStatusBadge(element, statusKey, statusLabel) {
+    element.className = 'value status-badge';
+
+    if (statusKey === 'processed') {
+        element.classList.add('in-transit');
+    } else if (statusKey === 'out-for-delivery') {
+        element.classList.add('in-transit');
+    } else {
+        element.classList.add('pending');
+    }
+
+    element.textContent = statusLabel;
+}
+
+function showTrackingResult(record) {
+    document.getElementById('resultTrackingNumber').textContent = record.trackingNumber;
+    updateStatusBadge(document.getElementById('resultStatus'), record.status, record.statusLabel);
+    document.getElementById('resultLocation').textContent = record.currentLocation;
+    document.getElementById('resultDelivery').textContent = record.estimatedDelivery;
+
+    renderTimeline(record.timeline || []);
+
+    document.getElementById('trackingResults').style.display = 'block';
+    document.getElementById('noResults').style.display = 'none';
+}
+
+function hideTrackingResult() {
+    document.getElementById('trackingResults').style.display = 'none';
+}
+
+function showNoResults() {
+    hideTrackingResult();
+    document.getElementById('noResults').style.display = 'block';
+}
+
+function trackPackage() {
+    var trackingInput = document.getElementById('trackingNumber');
+    var trackingNumber = trackingInput.value.trim().toUpperCase();
+
+    if (!trackingNumber) {
+        showNoResults();
+        return;
+    }
+
+    var packages = getStoredPackages();
+    var record = packages[trackingNumber];
+
+    if (!record) {
+        showNoResults();
+        return;
+    }
+
+    var hydratedRecord = hydrateShipment(record);
+    packages[trackingNumber] = hydratedRecord;
+    saveStoredPackages(packages);
+    showTrackingResult(hydratedRecord);
+}
+
+window.trackPackage = trackPackage;
