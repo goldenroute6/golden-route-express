@@ -13,26 +13,56 @@ function getElapsedDays(createdAt) {
     return Math.max(0, Math.floor(diffTime / (1000 * 60 * 60 * 24)));
 }
 
+function getRouteStopForDay(route, daysElapsed) {
+    if (!Array.isArray(route) || !route.length) {
+        return null;
+    }
+
+    var currentStop = route[0];
+    for (var i = 0; i < route.length; i++) {
+        if (daysElapsed >= route[i].day) {
+            currentStop = route[i];
+        }
+    }
+
+    return currentStop;
+}
+
 function getShipmentProgress(record) {
     var daysElapsed = getElapsedDays(record.createdAt || record.bookedAt);
+    var route = Array.isArray(record.route) ? record.route : [];
+    var currentStop = getRouteStopForDay(route, daysElapsed);
     var progress = {
         statusKey: 'booked',
         statusLabel: 'Booked',
         currentLocation: record.from,
-        daysElapsed: daysElapsed
+        daysElapsed: daysElapsed,
+        currentRouteStop: currentStop
     };
+
+    if (currentStop) {
+        progress.statusLabel = currentStop.status;
+        progress.currentLocation = currentStop.location;
+    }
 
     if (daysElapsed >= 5) {
         progress.statusKey = 'out-for-delivery';
-        progress.statusLabel = 'Out for Delivery';
-        progress.currentLocation = record.to;
+        return progress;
+    }
+
+    if (daysElapsed >= 4) {
+        progress.statusKey = 'in-transit';
+        return progress;
+    }
+
+    if (daysElapsed >= 3) {
+        progress.statusKey = 'in-transit';
         return progress;
     }
 
     if (daysElapsed >= 2) {
         progress.statusKey = 'processed';
-        progress.statusLabel = 'Processed';
-        progress.currentLocation = record.processingLocation || 'Origin Processing Center';
+        return progress;
     }
 
     return progress;
@@ -46,6 +76,7 @@ function hydrateShipment(record) {
     hydrated.status = progress.statusKey;
     hydrated.statusLabel = progress.statusLabel;
     hydrated.currentLocation = progress.currentLocation;
+    hydrated.currentRouteStop = progress.currentRouteStop;
 
     if (typeof window.buildShipmentTimeline === 'function') {
         hydrated.timeline = window.buildShipmentTimeline(hydrated);
@@ -86,9 +117,7 @@ function renderTimeline(events) {
 function updateStatusBadge(element, statusKey, statusLabel) {
     element.className = 'value status-badge';
 
-    if (statusKey === 'processed') {
-        element.classList.add('in-transit');
-    } else if (statusKey === 'out-for-delivery') {
+    if (statusKey === 'processed' || statusKey === 'in-transit' || statusKey === 'out-for-delivery') {
         element.classList.add('in-transit');
     } else {
         element.classList.add('pending');

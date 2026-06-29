@@ -47,29 +47,84 @@ function addDays(date, days) {
     return next;
 }
 
-function buildShipmentTimeline(record) {
-    var bookedAt = new Date(record.createdAt || record.bookedAt || new Date().toISOString());
-    var timeline = [
+function createTransitRoute(from, to, senderCity, recipientCity, shippingType) {
+    var route = [
         {
+            day: 0,
             status: 'Shipment Booked',
-            location: record.from,
-            time: formatTimelineTime(bookedAt)
+            location: from,
+            locationLabel: senderCity + ' Pickup Point'
+        },
+        {
+            day: 2,
+            status: 'Processed',
+            location: senderCity + ' Processing Center',
+            locationLabel: senderCity + ' Processing Center'
         }
     ];
 
-    if (record.daysElapsed >= 2) {
-        timeline.push({
-            status: 'Processed',
-            location: record.processingLocation || 'Origin Processing Center',
-            time: formatTimelineTime(addDays(bookedAt, 2))
-        });
+    if (shippingType === 'sea') {
+        route.push(
+            {
+                day: 3,
+                status: 'In Transit',
+                location: senderCity + ' Seaport Terminal',
+                locationLabel: senderCity + ' Seaport Terminal'
+            },
+            {
+                day: 4,
+                status: 'Arrived at Destination Hub',
+                location: recipientCity + ' Port Logistics Hub',
+                locationLabel: recipientCity + ' Port Logistics Hub'
+            }
+        );
+    } else {
+        route.push(
+            {
+                day: 3,
+                status: 'In Transit',
+                location: senderCity + ' Air Cargo Hub',
+                locationLabel: senderCity + ' Air Cargo Hub'
+            },
+            {
+                day: 4,
+                status: 'Arrived at Destination Hub',
+                location: recipientCity + ' Distribution Hub',
+                locationLabel: recipientCity + ' Distribution Hub'
+            }
+        );
     }
 
-    if (record.daysElapsed >= 5) {
+    route.push({
+        day: 5,
+        status: 'Out for Delivery',
+        location: to,
+        locationLabel: recipientCity + ' Final Delivery Route'
+    });
+
+    return route;
+}
+
+function buildShipmentTimeline(record) {
+    var bookedAt = new Date(record.createdAt || record.bookedAt || new Date().toISOString());
+    var route = Array.isArray(record.route) ? record.route : [];
+    var timeline = [];
+
+    route.forEach(function(stop) {
+        if (record.daysElapsed >= stop.day) {
+            timeline.push({
+                status: stop.status,
+                location: stop.location,
+                time: formatTimelineTime(addDays(bookedAt, stop.day))
+            });
+        }
+    });
+
+    if (!timeline.length) {
         timeline.push({
-            status: 'Out for Delivery',
-            location: record.to,
-            time: formatTimelineTime(addDays(bookedAt, 5))
+            status: 'Shipment Booked',
+            location: record.from,
+            time: formatTimelineTime(bookedAt)
         });
     }
 
@@ -80,7 +135,13 @@ function buildShipmentRecord(trackingNumber, formData) {
     var now = new Date();
     var from = formData.senderCity + ', ' + formData.senderCountry;
     var to = formData.recipientCity + ', ' + formData.recipientCountry;
-    var processingLocation = formData.senderCity + ' Processing Center';
+    var route = createTransitRoute(
+        from,
+        to,
+        formData.senderCity,
+        formData.recipientCity,
+        formData.shippingType
+    );
 
     return {
         trackingNumber: trackingNumber,
@@ -93,11 +154,15 @@ function buildShipmentRecord(trackingNumber, formData) {
         contents: formData.cargoDescription,
         sender: formData.senderName,
         recipient: formData.recipientName,
+        senderCity: formData.senderCity,
+        senderCountry: formData.senderCountry,
+        recipientCity: formData.recipientCity,
+        recipientCountry: formData.recipientCountry,
         shippingType: getShippingLabel(formData.shippingType),
         shippingTypeValue: formData.shippingType,
         createdAt: now.toISOString(),
         bookedAt: now.toISOString(),
-        processingLocation: processingLocation,
+        route: route,
         daysElapsed: 0,
         timeline: [
             {
@@ -179,7 +244,8 @@ function showShipConfirmation(trackingNumber, record) {
         ['Weight', record.weight],
         ['Service', record.shippingType],
         ['Est. Delivery', record.estimatedDelivery],
-        ['Current Status', 'Booked']
+        ['Current Status', 'Booked'],
+        ['Current Location', record.currentLocation]
     ];
     rows.forEach(function(row) {
         var item = document.createElement('div');
