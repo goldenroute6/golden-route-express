@@ -44,12 +44,6 @@
         top: 0 !important;
     }
 
-    .login-btn {
-        margin: 0;
-        border-radius: 0;
-        width: 100%;
-    }
-
     .hero-content       { padding: 3rem 1.5rem; }
     .hero-content h1    { font-size: 2rem; }
     .hero-buttons       { flex-direction: column; align-items: flex-start; }
