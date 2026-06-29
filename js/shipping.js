@@ -6,8 +6,8 @@ function generateTrackingNumber() {
 
 function getDeliveryDays(shippingType) {
     switch (shippingType) {
-        case 'express': return 3;
-        case 'freight': return 14;
+        case 'air': return 3;
+        case 'sea': return 14;
         default: return 7;
     }
 }
@@ -21,8 +21,8 @@ function getDeliveryDate(shippingType) {
 
 function getShippingLabel(shippingType) {
     switch (shippingType) {
-        case 'express': return 'Express';
-        case 'freight': return 'Freight';
+        case 'air': return 'Air Express';
+        case 'sea': return 'Sea Freight';
         default: return 'Standard';
     }
 }
