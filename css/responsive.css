@@ -1,1 +1,56 @@
-@media (max-width: 768px) { .nav-menu { gap: 1rem; font-size: 0.9rem; } .hero { padding: 4rem 1rem; } .hero-content h1 { font-size: 2.5rem; } .tracker-card { flex-direction: column; } .tracking-input, .track-button { width: 100%; } .form-columns { grid-template-columns: 1fr; } .ship-form-card { padding: 1.5rem 1rem; } .confirm-tracking { flex-direction: column; gap: 0.5rem; text-align: center; } } @media (max-width: 480px) { .hamburger { display: flex; } .nav-menu { position: absolute; top: 70px; left: -100%; flex-direction: column; width: 100%; background-color: var(--secondary-color); } .nav-menu.active { left: 0; } .hero { padding: 3rem 1rem; } .hero-content h1 { font-size: 1.8rem; } .hero-buttons { flex-direction: column; align-items: center; } .service-cards { grid-template-columns: 1fr; } }
+@media (max-width: 900px) {
+    .service-cards      { grid-template-columns: repeat(2, 1fr); }
+    .form-columns       { grid-template-columns: repeat(2, 1fr); }
+    .about-content      { grid-template-columns: repeat(2, 1fr); }
+    .hero-content h1    { font-size: 3rem; }
+}
+
+@media (max-width: 768px) {
+    .hero-content h1        { font-size: 2.4rem; }
+    .hero                   { min-height: auto; }
+    .tracker-card           { flex-direction: column; }
+    .tracking-input,
+    .track-button           { width: 100%; }
+    .form-columns           { grid-template-columns: 1fr; }
+    .service-cards          { grid-template-columns: 1fr; }
+    .about-content          { grid-template-columns: 1fr; }
+    .contact-info           { grid-template-columns: 1fr; }
+    .ship-form-card         { padding: 1.5rem 1rem; }
+    .confirm-tracking       { flex-direction: column; gap: 0.5rem; text-align: center; }
+}
+
+@media (max-width: 480px) {
+    .hamburger { display: flex; }
+
+    .nav-menu {
+        position: absolute;
+        top: 68px;
+        left: -100%;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        background: var(--dark);
+        border-top: 1px solid rgba(255,255,255,0.08);
+        z-index: 999;
+    }
+
+    .nav-menu.active { left: 0; }
+
+    .nav-link {
+        padding: 1rem 2rem;
+        width: 100%;
+        border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+        border-left: none !important;
+        top: 0 !important;
+    }
+
+    .hero-content       { padding: 3rem 1.5rem; }
+    .hero-content h1    { font-size: 2rem; }
+    .hero-buttons       { flex-direction: column; align-items: flex-start; }
+    .hero::before       { display: none; }
+
+    .ship-section,
+    .tracker-section,
+    .about-section,
+    .contact-section    { padding: 3rem 1rem; }
+}
