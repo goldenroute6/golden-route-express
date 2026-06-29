@@ -6,9 +6,13 @@ function generateTrackingNumber() {
 
 function getDeliveryDays(shippingType) {
     switch (shippingType) {
-        case 'express': return 3;
-        case 'freight': return 14;
-        default: return 7;
+        case 'air':
+            return 5;
+        case 'sea':
+            return 5;
+        case 'standard':
+        default:
+            return 5;
     }
 }
 
@@ -21,22 +25,127 @@ function getDeliveryDate(shippingType) {
 
 function getShippingLabel(shippingType) {
     switch (shippingType) {
-        case 'express': return 'Express';
-        case 'freight': return 'Freight';
-        default: return 'Standard';
+        case 'air':
+            return 'Air Express';
+        case 'sea':
+            return 'Sea Freight';
+        case 'standard':
+        default:
+            return 'Standard';
     }
+}
+
+function formatTimelineTime(date) {
+    var pad = function(n) { return n < 10 ? '0' + n : '' + n; };
+    return date.getFullYear() + '-' + pad(date.getMonth() + 1) + '-' + pad(date.getDate()) +
+        ' ' + pad(date.getHours()) + ':' + pad(date.getMinutes());
+}
+
+function addDays(date, days) {
+    var next = new Date(date.getTime());
+    next.setDate(next.getDate() + days);
+    return next;
+}
+
+function createTransitRoute(from, to, senderCity, recipientCity, shippingType) {
+    var route = [
+        {
+            day: 0,
+            status: 'Shipment Booked',
+            location: from,
+            locationLabel: senderCity + ' Pickup Point'
+        },
+        {
+            day: 2,
+            status: 'Processed',
+            location: senderCity + ' Processing Center',
+            locationLabel: senderCity + ' Processing Center'
+        }
+    ];
+
+    if (shippingType === 'sea') {
+        route.push(
+            {
+                day: 3,
+                status: 'In Transit',
+                location: senderCity + ' Seaport Terminal',
+                locationLabel: senderCity + ' Seaport Terminal'
+            },
+            {
+                day: 4,
+                status: 'Arrived at Destination Hub',
+                location: recipientCity + ' Port Logistics Hub',
+                locationLabel: recipientCity + ' Port Logistics Hub'
+            }
+        );
+    } else {
+        route.push(
+            {
+                day: 3,
+                status: 'In Transit',
+                location: senderCity + ' Air Cargo Hub',
+                locationLabel: senderCity + ' Air Cargo Hub'
+            },
+            {
+                day: 4,
+                status: 'Arrived at Destination Hub',
+                location: recipientCity + ' Distribution Hub',
+                locationLabel: recipientCity + ' Distribution Hub'
+            }
+        );
+    }
+
+    route.push({
+        day: 5,
+        status: 'Out for Delivery',
+        location: to,
+        locationLabel: recipientCity + ' Final Delivery Route'
+    });
+
+    return route;
+}
+
+function buildShipmentTimeline(record) {
+    var bookedAt = new Date(record.createdAt || record.bookedAt || new Date().toISOString());
+    var route = Array.isArray(record.route) ? record.route : [];
+    var timeline = [];
+
+    route.forEach(function(stop) {
+        if (record.daysElapsed >= stop.day) {
+            timeline.push({
+                status: stop.status,
+                location: stop.location,
+                time: formatTimelineTime(addDays(bookedAt, stop.day))
+            });
+        }
+    });
+
+    if (!timeline.length) {
+        timeline.push({
+            status: 'Shipment Booked',
+            location: record.from,
+            time: formatTimelineTime(bookedAt)
+        });
+    }
+
+    return timeline;
 }
 
 function buildShipmentRecord(trackingNumber, formData) {
     var now = new Date();
-    var pad = function(n) { return n < 10 ? '0' + n : '' + n; };
-    var timeStr = now.getFullYear() + '-' + pad(now.getMonth() + 1) + '-' + pad(now.getDate()) +
-        ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes());
     var from = formData.senderCity + ', ' + formData.senderCountry;
     var to = formData.recipientCity + ', ' + formData.recipientCountry;
+    var route = createTransitRoute(
+        from,
+        to,
+        formData.senderCity,
+        formData.recipientCity,
+        formData.shippingType
+    );
+
     return {
         trackingNumber: trackingNumber,
-        status: 'pending',
+        status: 'booked',
         from: from,
         to: to,
         currentLocation: from,
@@ -45,9 +154,22 @@ function buildShipmentRecord(trackingNumber, formData) {
         contents: formData.cargoDescription,
         sender: formData.senderName,
         recipient: formData.recipientName,
+        senderCity: formData.senderCity,
+        senderCountry: formData.senderCountry,
+        recipientCity: formData.recipientCity,
+        recipientCountry: formData.recipientCountry,
         shippingType: getShippingLabel(formData.shippingType),
+        shippingTypeValue: formData.shippingType,
+        createdAt: now.toISOString(),
+        bookedAt: now.toISOString(),
+        route: route,
+        daysElapsed: 0,
         timeline: [
-            { status: 'Shipment Booked', location: from, time: timeStr }
+            {
+                status: 'Shipment Booked',
+                location: from,
+                time: formatTimelineTime(now)
+            }
         ]
     };
 }
@@ -121,7 +243,9 @@ function showShipConfirmation(trackingNumber, record) {
         ['Contents', record.contents],
         ['Weight', record.weight],
         ['Service', record.shippingType],
-        ['Est. Delivery', record.estimatedDelivery]
+        ['Est. Delivery', record.estimatedDelivery],
+        ['Current Status', 'Booked'],
+        ['Current Location', record.currentLocation]
     ];
     rows.forEach(function(row) {
         var item = document.createElement('div');
@@ -177,3 +301,4 @@ function resetShippingForm() {
 window.bookShipment = bookShipment;
 window.trackBookedShipment = trackBookedShipment;
 window.resetShippingForm = resetShippingForm;
+window.buildShipmentTimeline = buildShipmentTimeline;
