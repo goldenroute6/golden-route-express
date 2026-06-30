@@ -542,6 +542,34 @@ body {
     font-family: 'Courier New', monospace;
 }
 
+.confirm-share {
+    max-width: 500px;
+    margin: 0 auto 1.5rem;
+    padding: 0.9rem 1.25rem;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--border-radius);
+    text-align: left;
+}
+
+.confirm-share .label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+}
+
+.confirm-share-link {
+    display: block;
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 0.9rem;
+    word-break: break-word;
+}
+
 .confirm-details {
     background: var(--light);
     border: 1px solid var(--border);

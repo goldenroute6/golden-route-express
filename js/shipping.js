@@ -4,6 +4,87 @@ function generateTrackingNumber() {
     return 'GRE-' + year + '-' + rand;
 }
 
+function normalizeTrackingNumber(value) {
+    return (value || '').toString().trim().toUpperCase();
+}
+
+function encodeShipmentRecord(record) {
+    try {
+        return btoa(unescape(encodeURIComponent(JSON.stringify(record))));
+    } catch (error) {
+        return '';
+    }
+}
+
+function decodeShipmentRecord(encodedRecord) {
+    if (!encodedRecord) {
+        return null;
+    }
+
+    try {
+        return JSON.parse(decodeURIComponent(escape(atob(encodedRecord))));
+    } catch (error) {
+        return null;
+    }
+}
+
+function isShareableShipmentRecord(record) {
+    return !!(
+        record &&
+        typeof record === 'object' &&
+        normalizeTrackingNumber(record.trackingNumber) &&
+        record.from &&
+        record.to &&
+        record.estimatedDelivery
+    );
+}
+
+function getSharedShipmentFromSource(source) {
+    if (!source || typeof source !== 'string') {
+        return null;
+    }
+
+    try {
+        var url = new URL(source, window.location.href);
+        var trackingNumber = normalizeTrackingNumber(url.searchParams.get('tracking'));
+        var decodedRecord = decodeShipmentRecord(url.searchParams.get('shipment'));
+
+        if (!isShareableShipmentRecord(decodedRecord)) {
+            return null;
+        }
+
+        decodedRecord.trackingNumber = normalizeTrackingNumber(decodedRecord.trackingNumber);
+
+        if (trackingNumber && decodedRecord.trackingNumber !== trackingNumber) {
+            return null;
+        }
+
+        return decodedRecord;
+    } catch (error) {
+        return null;
+    }
+}
+
+function buildTrackingShareUrl(record) {
+    if (!isShareableShipmentRecord(record)) {
+        return '';
+    }
+
+    var url = new URL(window.location.href);
+    var trackingNumber = normalizeTrackingNumber(record.trackingNumber);
+    var encodedRecord = encodeShipmentRecord(record);
+
+    if (!encodedRecord) {
+        return '';
+    }
+
+    url.searchParams.set('tracking', trackingNumber);
+    url.searchParams.set('shipment', encodedRecord);
+    url.hash = 'tracker';
+
+    return url.toString();
+}
+
 function getDeliveryDays(shippingType) {
     switch (shippingType) {
         case 'air':
@@ -175,9 +256,21 @@ function buildShipmentRecord(trackingNumber, formData) {
 }
 
 function saveShipment(record) {
-    var packages = JSON.parse(localStorage.getItem('packages') || '{}');
+    var packages = {};
+
+    try {
+        packages = JSON.parse(localStorage.getItem('packages') || '{}');
+    } catch (error) {
+        packages = {};
+    }
+
     packages[record.trackingNumber] = record;
-    localStorage.setItem('packages', JSON.stringify(packages));
+
+    try {
+        localStorage.setItem('packages', JSON.stringify(packages));
+    } catch (error) {
+        return;
+    }
 }
 
 function getFormData() {
@@ -233,6 +326,12 @@ function showShipConfirmation(trackingNumber, record) {
     conf.style.display = 'block';
 
     document.getElementById('confirmTrackingNumber').textContent = trackingNumber;
+    var trackingLink = document.getElementById('confirmTrackingLink');
+    var shareUrl = buildTrackingShareUrl(record);
+    if (trackingLink) {
+        trackingLink.href = shareUrl || '#';
+        trackingLink.textContent = shareUrl || 'Unable to generate tracking link';
+    }
 
     var details = document.getElementById('confirmDetails');
     details.innerHTML = '';
@@ -298,7 +397,58 @@ function resetShippingForm() {
     hideShipFormError();
 }
 
+function copyTrackingLink(button) {
+    var link = document.getElementById('confirmTrackingLink');
+    var shareUrl = link ? link.getAttribute('href') : '';
+    if (!shareUrl || shareUrl === '#') {
+        return;
+    }
+
+    var originalLabel = button ? button.textContent : '';
+    var updateButtonLabel = function(label) {
+        if (!button) {
+            return;
+        }
+
+        button.textContent = label;
+        window.setTimeout(function() {
+            button.textContent = originalLabel;
+        }, 1800);
+    };
+
+    if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+        navigator.clipboard.writeText(shareUrl).then(function() {
+            updateButtonLabel('Link Copied');
+        }).catch(function() {
+            updateButtonLabel('Copy Failed');
+        });
+        return;
+    }
+
+    var tempInput = document.createElement('input');
+    tempInput.type = 'text';
+    tempInput.value = shareUrl;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    tempInput.setSelectionRange(0, shareUrl.length);
+
+    try {
+        if (document.execCommand('copy')) {
+            updateButtonLabel('Link Copied');
+        } else {
+            updateButtonLabel('Copy Failed');
+        }
+    } catch (error) {
+        updateButtonLabel('Copy Failed');
+    }
+
+    document.body.removeChild(tempInput);
+}
+
 window.bookShipment = bookShipment;
 window.trackBookedShipment = trackBookedShipment;
 window.resetShippingForm = resetShippingForm;
 window.buildShipmentTimeline = buildShipmentTimeline;
+window.normalizeTrackingNumber = normalizeTrackingNumber;
+window.getSharedShipmentFromSource = getSharedShipmentFromSource;
+window.copyTrackingLink = copyTrackingLink;

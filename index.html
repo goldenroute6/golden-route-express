@@ -158,9 +158,14 @@
                         <span class="label">Tracking Number:</span>
                         <span id="confirmTrackingNumber" class="confirm-number"></span>
                     </div>
+                    <div class="confirm-share">
+                        <span class="label">Open on any phone:</span>
+                        <a id="confirmTrackingLink" class="confirm-share-link" href="#" target="_blank" rel="noopener"></a>
+                    </div>
                     <div class="confirm-details" id="confirmDetails"></div>
                     <div class="confirm-actions">
                         <button class="track-button" onclick="trackBookedShipment()">Track This Shipment</button>
+                        <button type="button" class="cta-button cta-secondary" onclick="copyTrackingLink(this)">Copy Tracking Link</button>
                         <button class="cta-button cta-secondary" onclick="resetShippingForm()">Book Another</button>
                     </div>
                 </div>

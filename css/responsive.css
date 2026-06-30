@@ -17,6 +17,7 @@
     .about-content          { grid-template-columns: 1fr; }
     .contact-info           { grid-template-columns: 1fr; }
     .ship-form-card         { padding: 1.5rem 1rem; }
+    .confirm-share          { text-align: center; }
     .confirm-tracking       { flex-direction: column; gap: 0.5rem; text-align: center; }
     .progress-steps         { grid-template-columns: repeat(2, 1fr); }
     .progress-panel-header,

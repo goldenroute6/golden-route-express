@@ -1,9 +1,57 @@
 function getStoredPackages() {
-    return JSON.parse(localStorage.getItem('packages') || '{}');
+    try {
+        var stored = JSON.parse(localStorage.getItem('packages') || '{}');
+        return stored && typeof stored === 'object' ? stored : {};
+    } catch (error) {
+        return {};
+    }
 }
 
 function saveStoredPackages(packages) {
-    localStorage.setItem('packages', JSON.stringify(packages));
+    try {
+        localStorage.setItem('packages', JSON.stringify(packages));
+    } catch (error) {
+        return;
+    }
+}
+
+function normalizeTrackingLookup(value) {
+    if (typeof window.normalizeTrackingNumber === 'function') {
+        return window.normalizeTrackingNumber(value);
+    }
+
+    return (value || '').toString().trim().toUpperCase();
+}
+
+function importSharedShipment(source) {
+    if (typeof window.getSharedShipmentFromSource !== 'function') {
+        return '';
+    }
+
+    var sharedRecord = window.getSharedShipmentFromSource(source);
+    if (!sharedRecord) {
+        return '';
+    }
+
+    var trackingNumber = normalizeTrackingLookup(sharedRecord.trackingNumber);
+    if (!trackingNumber) {
+        return '';
+    }
+
+    var packages = getStoredPackages();
+    packages[trackingNumber] = sharedRecord;
+    saveStoredPackages(packages);
+
+    return trackingNumber;
+}
+
+function getTrackingNumberFromUrl() {
+    try {
+        var params = new URLSearchParams(window.location.search);
+        return normalizeTrackingLookup(params.get('tracking'));
+    } catch (error) {
+        return '';
+    }
 }
 
 function getElapsedDays(createdAt) {
@@ -227,7 +275,8 @@ function showNoResults() {
 
 function trackPackage() {
     var trackingInput = document.getElementById('trackingNumber');
-    var trackingNumber = trackingInput.value.trim().toUpperCase();
+    var trackingValue = trackingInput.value.trim();
+    var trackingNumber = importSharedShipment(trackingValue) || normalizeTrackingLookup(trackingValue);
 
     if (!trackingNumber) {
         showNoResults();
@@ -248,4 +297,27 @@ function trackPackage() {
     showTrackingResult(hydratedRecord);
 }
 
+function bootstrapSharedTracking() {
+    importSharedShipment(window.location.href);
+
+    var trackingNumber = getTrackingNumberFromUrl();
+    if (!trackingNumber) {
+        return;
+    }
+
+    var trackingInput = document.getElementById('trackingNumber');
+    if (!trackingInput) {
+        return;
+    }
+
+    trackingInput.value = trackingNumber;
+    trackPackage();
+}
+
 window.trackPackage = trackPackage;
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bootstrapSharedTracking);
+} else {
+    bootstrapSharedTracking();
+}
