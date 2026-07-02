@@ -39,6 +39,50 @@ function isShareableShipmentRecord(record) {
     );
 }
 
+function buildCompactPayload(record) {
+    return {
+        t: record.trackingNumber || '',
+        sc: record.senderCity || '',
+        sk: record.senderCountry || '',
+        rc: record.recipientCity || '',
+        rk: record.recipientCountry || '',
+        sn: record.sender || '',
+        rn: record.recipient || '',
+        w: record.weight || '',
+        d: record.contents || '',
+        st: record.shippingTypeValue || '',
+        ca: record.createdAt || ''
+    };
+}
+
+function expandCompactPayload(compact) {
+    if (!compact || !compact.t || !compact.sc || !compact.rc) {
+        return null;
+    }
+
+    var weightStr = (compact.w || '').toString().replace(/\s*kg\s*$/i, '').trim();
+    var formData = {
+        senderName: compact.sn || '',
+        senderCity: compact.sc || '',
+        senderCountry: compact.sk || '',
+        recipientName: compact.rn || '',
+        recipientCity: compact.rc || '',
+        recipientCountry: compact.rk || '',
+        cargoDescription: compact.d || '',
+        cargoWeight: weightStr || '0',
+        shippingType: compact.st || 'standard'
+    };
+
+    var record = buildShipmentRecord(compact.t, formData);
+
+    if (compact.ca) {
+        record.createdAt = compact.ca;
+        record.bookedAt = compact.ca;
+    }
+
+    return record;
+}
+
 function getSharedShipmentFromSource(source) {
     if (!source || typeof source !== 'string') {
         return null;
@@ -47,19 +91,41 @@ function getSharedShipmentFromSource(source) {
     try {
         var url = new URL(source, window.location.href);
         var trackingNumber = normalizeTrackingNumber(url.searchParams.get('tracking'));
-        var decodedRecord = decodeShipmentRecord(url.searchParams.get('shipment'));
+        var encodedData = url.searchParams.get('shipment');
 
-        if (!isShareableShipmentRecord(decodedRecord)) {
+        if (!encodedData) {
             return null;
         }
 
-        decodedRecord.trackingNumber = normalizeTrackingNumber(decodedRecord.trackingNumber);
-
-        if (trackingNumber && decodedRecord.trackingNumber !== trackingNumber) {
+        var decoded;
+        try {
+            decoded = JSON.parse(decodeURIComponent(escape(atob(encodedData))));
+        } catch (e) {
             return null;
         }
 
-        return decodedRecord;
+        if (!decoded || typeof decoded !== 'object') {
+            return null;
+        }
+
+        var record;
+        if (decoded.t) {
+            record = expandCompactPayload(decoded);
+        } else {
+            record = decoded;
+        }
+
+        if (!isShareableShipmentRecord(record)) {
+            return null;
+        }
+
+        record.trackingNumber = normalizeTrackingNumber(record.trackingNumber);
+
+        if (trackingNumber && record.trackingNumber !== trackingNumber) {
+            return null;
+        }
+
+        return record;
     } catch (error) {
         return null;
     }
@@ -72,14 +138,21 @@ function buildTrackingShareUrl(record) {
 
     var url = new URL(window.location.href);
     var trackingNumber = normalizeTrackingNumber(record.trackingNumber);
-    var encodedRecord = encodeShipmentRecord(record);
+    var compact = buildCompactPayload(record);
+    var encoded;
 
-    if (!encodedRecord) {
+    try {
+        encoded = btoa(unescape(encodeURIComponent(JSON.stringify(compact))));
+    } catch (error) {
+        return '';
+    }
+
+    if (!encoded) {
         return '';
     }
 
     url.searchParams.set('tracking', trackingNumber);
-    url.searchParams.set('shipment', encodedRecord);
+    url.searchParams.set('shipment', encoded);
     url.hash = 'tracker';
 
     return url.toString();
@@ -330,7 +403,12 @@ function showShipConfirmation(trackingNumber, record) {
     var shareUrl = buildTrackingShareUrl(record);
     if (trackingLink) {
         trackingLink.href = shareUrl || '#';
-        trackingLink.textContent = shareUrl || 'Unable to generate tracking link';
+        trackingLink.textContent = shareUrl ? trackingNumber : 'Unable to generate tracking link';
+    }
+
+    var copyLinkBtn = document.getElementById('copyLinkBtn');
+    if (copyLinkBtn && navigator.share) {
+        copyLinkBtn.textContent = 'Share Tracking Link';
     }
 
     var details = document.getElementById('confirmDetails');
@@ -401,6 +479,18 @@ function copyTrackingLink(button) {
     var link = document.getElementById('confirmTrackingLink');
     var shareUrl = link ? link.getAttribute('href') : '';
     if (!shareUrl || shareUrl === '#') {
+        return;
+    }
+
+    var trackingNum = document.getElementById('confirmTrackingNumber');
+    var trackingNumber = trackingNum ? trackingNum.textContent : '';
+
+    if (navigator.share) {
+        navigator.share({
+            title: 'Track Your Shipment \u2014 Golden Route Express',
+            text: 'Track shipment ' + trackingNumber,
+            url: shareUrl
+        });
         return;
     }
 
