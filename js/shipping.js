@@ -4,6 +4,8 @@ function generateTrackingNumber() {
     return 'GRE-' + year + '-' + rand;
 }
 
+var latestShareUrl = '';
+
 function normalizeTrackingNumber(value) {
     return (value || '').toString().trim().toUpperCase();
 }
@@ -406,6 +408,7 @@ function showShipConfirmation(trackingNumber, record) {
     document.getElementById('confirmTrackingNumber').textContent = trackingNumber;
     var trackingLink = document.getElementById('confirmTrackingLink');
     var shareUrl = buildTrackingShareUrl(record);
+    latestShareUrl = shareUrl || '';
     if (trackingLink) {
         trackingLink.href = shareUrl || '#';
         trackingLink.textContent = shareUrl ? 'Open tracking page' : 'Tracking page unavailable';
@@ -486,7 +489,7 @@ function resetShippingForm() {
 
 function copyTrackingLink(button) {
     var link = document.getElementById('confirmTrackingLink');
-    var shareUrl = link ? link.getAttribute('href') : '';
+    var shareUrl = (link ? link.getAttribute('href') : '') || latestShareUrl;
     if (!shareUrl || shareUrl === '#') {
         return;
     }
