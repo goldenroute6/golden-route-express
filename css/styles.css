@@ -302,6 +302,7 @@ body {
 }
 
 .ship-section {
+    display: none;
     padding: 5.5rem 2rem;
     background: var(--white);
 }

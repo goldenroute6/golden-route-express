@@ -7,8 +7,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700;800;900&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css?v=20260702-2">
-    <link rel="stylesheet" href="css/responsive.css?v=20260702-2">
+    <link rel="stylesheet" href="css/styles.css?v=20260703-3">
+    <link rel="stylesheet" href="css/responsive.css?v=20260703-3">
 </head>
 <body>
     <nav class="navbar">
@@ -21,7 +21,6 @@
             </div>
             <ul class="nav-menu">
                 <li><a href="#home" class="nav-link active">Home</a></li>
-                <li><a href="#ship" class="nav-link">Ship Cargo</a></li>
                 <li><a href="#tracker" class="nav-link">Track Package</a></li>
                 <li><a href="#about" class="nav-link">About</a></li>
                 <li><a href="#contact" class="nav-link">Contact</a></li>
@@ -46,13 +45,13 @@
                 <span class="hero-badge">Real-Time Tracking</span>
             </div>
             <div class="hero-buttons">
-                <button class="cta-button" onclick="scrollToSection('ship')">Ship Now</button>
-                <button class="cta-button cta-secondary" onclick="scrollToSection('tracker')">Track Package</button>
+                <button class="cta-button" onclick="scrollToSection('tracker')">Track Package</button>
+                <button class="cta-button cta-secondary" onclick="scrollToSection('contact')">Contact Us</button>
             </div>
         </div>
     </section>
 
-    <section id="ship" class="ship-section">
+    <section id="ship" class="ship-section" hidden>
         <div class="container">
             <h2>Ship Your Cargo</h2>
             <p class="section-subtitle">Fast, secure, and reliable shipping to destinations worldwide</p>
