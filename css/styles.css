@@ -516,57 +516,52 @@ body {
 }
 
 .confirm-tracking {
-    background: var(--light);
-    border-left: 4px solid var(--gold);
+    background: linear-gradient(135deg, #FCF7EA, #F5E9C8);
+    border: 1px solid #E7D5A5;
     border-radius: var(--border-radius);
-    padding: 0.9rem 1.5rem;
+    padding: 1rem 1.25rem;
     display: inline-flex;
     align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
 }
 
 .confirm-tracking .label {
-    font-size: 0.72rem;
+    font-size: 0.78rem;
     font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--text-muted);
+    letter-spacing: 0.3px;
+    color: #7A6A43;
 }
 
 .confirm-number {
-    font-size: 1.2rem;
+    font-size: 1.08rem;
     font-weight: 800;
     color: var(--primary);
-    letter-spacing: 2px;
+    letter-spacing: 0.8px;
     font-family: 'Courier New', monospace;
 }
 
 .confirm-share {
     max-width: 500px;
     margin: 0 auto 1.5rem;
-    padding: 0.9rem 1.25rem;
-    background: var(--white);
-    border: 1px solid var(--border);
+    padding: 0.75rem;
+    background: #FAFBFD;
+    border: 1px solid #DCE3EE;
     border-radius: var(--border-radius);
-    text-align: left;
-}
-
-.confirm-share .label {
-    display: block;
-    font-size: 0.72rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--text-muted);
-    margin-bottom: 0.4rem;
+    text-align: center;
 }
 
 .confirm-share-link {
-    display: block;
-    color: var(--primary);
-    font-weight: 600;
-    font-size: 0.9rem;
+    display: inline-block;
+    background: var(--white);
+    border: 1px solid #CBD6E8;
+    border-radius: 10px;
+    padding: 0.65rem 0.8rem;
+    color: #1A3A7C;
+    font-weight: 700;
+    font-size: 0.84rem;
+    text-decoration: none;
+    line-height: 1.35;
     word-break: break-word;
 }
 
