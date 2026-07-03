@@ -408,7 +408,7 @@ function showShipConfirmation(trackingNumber, record) {
     var shareUrl = buildTrackingShareUrl(record);
     if (trackingLink) {
         trackingLink.href = shareUrl || '#';
-        trackingLink.textContent = shareUrl ? trackingNumber : 'Unable to generate tracking link';
+        trackingLink.textContent = shareUrl ? 'Open tracking page' : 'Tracking page unavailable';
     }
 
     var copyLinkBtn = document.getElementById('copyLinkBtn');
