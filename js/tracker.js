@@ -42,7 +42,30 @@ function importSharedShipment(source) {
     packages[trackingNumber] = sharedRecord;
     saveStoredPackages(packages);
 
+    if (window.GREDataStore && typeof window.GREDataStore.upsertShipment === 'function') {
+        window.GREDataStore.upsertShipment(sharedRecord).catch(function() {
+            return;
+        });
+    }
+
     return trackingNumber;
+}
+
+async function getTrackedShipment(trackingNumber) {
+    var packages = getStoredPackages();
+    if (packages[trackingNumber]) {
+        return packages[trackingNumber];
+    }
+
+    if (window.GREDataStore && typeof window.GREDataStore.getShipment === 'function') {
+        try {
+            return await window.GREDataStore.getShipment(trackingNumber);
+        } catch (error) {
+            return null;
+        }
+    }
+
+    return null;
 }
 
 function getTrackingNumberFromUrl() {
@@ -273,7 +296,7 @@ function showNoResults() {
     document.getElementById('noResults').style.display = 'block';
 }
 
-function trackPackage() {
+async function trackPackage() {
     var trackingInput = document.getElementById('trackingNumber');
     var trackingValue = trackingInput.value.trim();
     var trackingNumber = importSharedShipment(trackingValue) || normalizeTrackingLookup(trackingValue);
@@ -283,8 +306,7 @@ function trackPackage() {
         return;
     }
 
-    var packages = getStoredPackages();
-    var record = packages[trackingNumber];
+    var record = await getTrackedShipment(trackingNumber);
 
     if (!record) {
         showNoResults();
@@ -292,8 +314,17 @@ function trackPackage() {
     }
 
     var hydratedRecord = hydrateShipment(record);
+
+    var packages = getStoredPackages();
     packages[trackingNumber] = hydratedRecord;
     saveStoredPackages(packages);
+
+    if (window.GREDataStore && typeof window.GREDataStore.upsertShipment === 'function') {
+        window.GREDataStore.upsertShipment(hydratedRecord).catch(function() {
+            return;
+        });
+    }
+
     showTrackingResult(hydratedRecord);
 }
 

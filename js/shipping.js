@@ -328,7 +328,12 @@ function buildShipmentRecord(trackingNumber, formData) {
     };
 }
 
-function saveShipment(record) {
+async function saveShipment(record) {
+    if (window.GREDataStore && typeof window.GREDataStore.upsertShipment === 'function') {
+        await window.GREDataStore.upsertShipment(record);
+        return;
+    }
+
     var packages = {};
 
     try {
@@ -454,8 +459,12 @@ function bookShipment(event) {
 
     var trackingNumber = generateTrackingNumber();
     var record = buildShipmentRecord(trackingNumber, data);
-    saveShipment(record);
-    showShipConfirmation(trackingNumber, record);
+
+    saveShipment(record).then(function() {
+        showShipConfirmation(trackingNumber, record);
+    }).catch(function() {
+        showShipFormError('Could not save shipment. Please try again.');
+    });
 }
 
 function trackBookedShipment() {
