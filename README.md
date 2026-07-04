@@ -109,3 +109,37 @@ using (true);
 revoke insert, update, delete on table public.shipments from anon;
 grant select on table public.shipments to anon;
 ```
+
+## Manage bookings in VS Code
+
+You can control booking and tracking codes directly from VS Code.
+
+Files:
+
+- data/shipments.json
+- scripts/sync-shipments.sh
+- scripts/get-shipment.sh
+
+### Booking workflow in VS Code
+
+1. Open `data/shipments.json`
+2. Add or edit shipment objects
+3. Run sync command in VS Code terminal:
+
+```bash
+export SUPABASE_SERVICE_ROLE_KEY="YOUR_SERVICE_ROLE_KEY"
+scripts/sync-shipments.sh
+```
+
+This upserts all shipments by `tracking_number`.
+
+### Check one tracking code in VS Code
+
+```bash
+scripts/get-shipment.sh GRE-2026-9201
+```
+
+### Notes
+
+- `SUPABASE_SERVICE_ROLE_KEY` is required for booking sync writes.
+- Never commit your service role key into repository files.

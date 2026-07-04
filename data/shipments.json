@@ -1,0 +1,65 @@
+[
+  {
+    "tracking_number": "GRE-2026-9201",
+    "payload": {
+      "trackingNumber": "GRE-2026-9201",
+      "status": "booked",
+      "from": "Pitsburgh, Texas, USA",
+      "to": "Akra, Ghana",
+      "currentLocation": "Pitsburgh, Texas, USA",
+      "estimatedDelivery": "2026-07-10",
+      "weight": "5.7 kg",
+      "contents": "Cloth",
+      "sender": "Jane Rowe",
+      "recipient": "Chukwudi",
+      "senderCity": "Pitsburgh, Texas",
+      "senderCountry": "USA",
+      "recipientCity": "Akra",
+      "recipientCountry": "Ghana",
+      "shippingType": "Standard",
+      "shippingTypeValue": "standard",
+      "createdAt": "2026-07-05T12:00:00.000Z",
+      "bookedAt": "2026-07-05T12:00:00.000Z",
+      "route": [
+        {
+          "day": 0,
+          "status": "Shipment Booked",
+          "location": "Pitsburgh, Texas, USA",
+          "locationLabel": "Pitsburgh Pickup Point"
+        },
+        {
+          "day": 2,
+          "status": "Processed",
+          "location": "Pitsburgh Processing Center",
+          "locationLabel": "Pitsburgh Processing Center"
+        },
+        {
+          "day": 3,
+          "status": "In Transit",
+          "location": "Dallas Air Cargo Hub",
+          "locationLabel": "Dallas Air Cargo Hub"
+        },
+        {
+          "day": 4,
+          "status": "Arrived at Destination Hub",
+          "location": "Akra Distribution Hub",
+          "locationLabel": "Akra Distribution Hub"
+        },
+        {
+          "day": 5,
+          "status": "Out for Delivery",
+          "location": "Akra, Ghana",
+          "locationLabel": "Akra Final Delivery Route"
+        }
+      ],
+      "daysElapsed": 0,
+      "timeline": [
+        {
+          "status": "Shipment Booked",
+          "location": "Pitsburgh, Texas, USA",
+          "time": "2026-07-05 12:00"
+        }
+      ]
+    }
+  }
+]
