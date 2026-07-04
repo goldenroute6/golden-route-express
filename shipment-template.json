@@ -1,0 +1,60 @@
+{
+  "trackingNumber": "GRE-2026-9001",
+  "status": "booked",
+  "from": "New York, USA",
+  "to": "London, UK",
+  "currentLocation": "New York, USA",
+  "estimatedDelivery": "2026-07-10",
+  "weight": "5.0 kg",
+  "contents": "Electronics",
+  "sender": "Sender Name",
+  "recipient": "Recipient Name",
+  "senderCity": "New York",
+  "senderCountry": "USA",
+  "recipientCity": "London",
+  "recipientCountry": "UK",
+  "shippingType": "Standard",
+  "shippingTypeValue": "standard",
+  "createdAt": "2026-07-05T10:00:00.000Z",
+  "bookedAt": "2026-07-05T10:00:00.000Z",
+  "route": [
+    {
+      "day": 0,
+      "status": "Shipment Booked",
+      "location": "New York, USA",
+      "locationLabel": "New York Pickup Point"
+    },
+    {
+      "day": 2,
+      "status": "Processed",
+      "location": "New York Processing Center",
+      "locationLabel": "New York Processing Center"
+    },
+    {
+      "day": 3,
+      "status": "In Transit",
+      "location": "New York Air Cargo Hub",
+      "locationLabel": "New York Air Cargo Hub"
+    },
+    {
+      "day": 4,
+      "status": "Arrived at Destination Hub",
+      "location": "London Distribution Hub",
+      "locationLabel": "London Distribution Hub"
+    },
+    {
+      "day": 5,
+      "status": "Out for Delivery",
+      "location": "London, UK",
+      "locationLabel": "London Final Delivery Route"
+    }
+  ],
+  "daysElapsed": 0,
+  "timeline": [
+    {
+      "status": "Shipment Booked",
+      "location": "New York, USA",
+      "time": "2026-07-05 10:00"
+    }
+  ]
+}

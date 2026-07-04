@@ -17,7 +17,7 @@
         }
 
         .admin-shell {
-            max-width: 980px;
+            max-width: 920px;
             margin: 0 auto;
             display: grid;
             gap: 1rem;
@@ -36,7 +36,7 @@
             font-size: 1.25rem;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.35rem;
         }
 
         .admin-head p {
@@ -53,47 +53,40 @@
             padding: 1.25rem;
         }
 
-        .admin-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.9rem;
-        }
-
-        .admin-grid .form-group.full {
-            grid-column: 1 / -1;
+        .admin-card h3 {
+            font-family: 'Raleway', sans-serif;
+            color: var(--dark);
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1.5px;
         }
 
         .admin-actions {
             display: flex;
-            gap: 0.6rem;
+            gap: 0.65rem;
             flex-wrap: wrap;
+            margin-top: 0.85rem;
         }
 
-        .admin-meta {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 0.75rem;
-            margin-bottom: 0.7rem;
-            flex-wrap: wrap;
+        .admin-list {
+            margin-left: 1rem;
+            color: var(--text);
         }
 
-        .admin-meta strong {
-            color: var(--primary);
+        .admin-list li {
+            margin-bottom: 0.35rem;
         }
 
-        #adminSession,
-        #bookingPanel,
-        #bookingSuccess,
-        #adminError,
-        #adminNotice {
-            display: none;
-        }
-
-        @media (max-width: 768px) {
-            .admin-grid {
-                grid-template-columns: 1fr;
-            }
+        .admin-code {
+            background: #F6F7FB;
+            border: 1px solid #DCE3EE;
+            border-radius: 8px;
+            padding: 0.75rem;
+            font-family: 'Courier New', monospace;
+            color: #21324F;
+            font-size: 0.84rem;
+            word-break: break-word;
         }
     </style>
 </head>
@@ -115,101 +108,41 @@
     <main class="admin-wrap">
         <div class="admin-shell">
             <section class="admin-head">
-                <h1>Private Booking Console</h1>
-                <p>Only authorized admin login can create shipments.</p>
+                <h1>Admin Booking (Simple Mode)</h1>
+                <p>Booking is managed directly in Supabase Table Editor. Public website is tracking only.</p>
             </section>
 
-            <section class="admin-card" id="adminLoginPanel">
-                <h3>Admin Sign In</h3>
-                <p class="section-subtitle">Use your Supabase Auth admin account.</p>
-                <form id="adminLoginForm" class="admin-grid" novalidate>
-                    <div class="form-group full">
-                        <label for="adminEmail">Email</label>
-                        <input type="email" id="adminEmail" placeholder="admin@yourdomain.com" required>
-                    </div>
-                    <div class="form-group full">
-                        <label for="adminPassword">Password</label>
-                        <input type="password" id="adminPassword" placeholder="Enter password" required>
-                    </div>
-                    <div class="form-submit full">
-                        <button type="submit" class="cta-button">Sign In</button>
-                    </div>
-                </form>
-            </section>
-
-            <section class="admin-card" id="adminSession">
-                <div class="admin-meta">
-                    <span>Signed in as <strong id="adminUserEmail"></strong></span>
-                    <button type="button" class="cta-button cta-secondary" id="adminLogoutBtn">Sign Out</button>
+            <section class="admin-card">
+                <h3>Step 1</h3>
+                <ol class="admin-list">
+                    <li>Open your Supabase project: <strong>nytgmlaiecrmrnymgclm</strong></li>
+                    <li>Go to <strong>Table Editor</strong>.</li>
+                    <li>Open table: <strong>shipments</strong>.</li>
+                    <li>Click <strong>Insert row</strong>.</li>
+                </ol>
+                <div class="admin-actions">
+                    <a class="cta-button" href="https://supabase.com/dashboard" target="_blank" rel="noopener">Open Supabase Dashboard</a>
+                    <a class="cta-button cta-secondary" href="./index.html#tracker">Open Public Tracker</a>
                 </div>
             </section>
 
-            <section class="admin-card" id="bookingPanel">
-                <h3>Create Shipment</h3>
-                <form id="adminBookingForm" class="admin-grid" novalidate>
-                    <div class="form-group">
-                        <label for="senderName">Sender Name</label>
-                        <input type="text" id="senderName" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="recipientName">Recipient Name</label>
-                        <input type="text" id="recipientName" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="senderCity">Sender City</label>
-                        <input type="text" id="senderCity" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="senderCountry">Sender Country</label>
-                        <input type="text" id="senderCountry" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="recipientCity">Recipient City</label>
-                        <input type="text" id="recipientCity" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="recipientCountry">Recipient Country</label>
-                        <input type="text" id="recipientCountry" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="cargoDescription">Cargo Description</label>
-                        <input type="text" id="cargoDescription" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="cargoWeight">Cargo Weight (kg)</label>
-                        <input type="number" id="cargoWeight" min="0.1" step="0.1" required>
-                    </div>
-                    <div class="form-group full">
-                        <label for="shippingType">Shipping Type</label>
-                        <select id="shippingType" required>
-                            <option value="">Select...</option>
-                            <option value="air">Air Express</option>
-                            <option value="sea">Sea Freight</option>
-                            <option value="standard">Standard</option>
-                        </select>
-                    </div>
-                    <div class="form-submit full">
-                        <button type="submit" class="cta-button">Create Shipment</button>
-                    </div>
-                </form>
+            <section class="admin-card">
+                <h3>Step 2</h3>
+                <p>Fill these two columns in each row:</p>
+                <ul class="admin-list">
+                    <li><strong>tracking_number</strong>: example GRE-2026-9001</li>
+                    <li><strong>payload</strong>: paste shipment JSON template</li>
+                </ul>
+                <p>Template file in repo:</p>
+                <div class="admin-code">shipment-template.json</div>
             </section>
 
-            <section class="admin-card" id="bookingSuccess">
-                <h3>Shipment Created</h3>
-                <p>Tracking Number: <strong id="createdTrackingNumber"></strong></p>
+            <section class="admin-card">
+                <h3>Step 3</h3>
+                <p>Save row, then test from any phone in public tracker:</p>
+                <div class="admin-code">https://goldenroute6.github.io/golden-route-express/</div>
             </section>
-
-            <section class="message error" id="adminError"></section>
-            <section class="message" id="adminNotice"></section>
         </div>
     </main>
-
-    <script>
-        window.GRE_SUPABASE_URL = 'https://nytgmlaiecrmrnymgclm.supabase.co';
-        window.GRE_SUPABASE_ANON_KEY = 'sb_publishable_iub4F08jEnUrOyplZPz1zQ_w_nSIs8m';
-        window.GRE_ADMIN_EMAIL = 'sergeantnicholas6@gmail.com';
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="js/admin.js?v=20260703-1"></script>
 </body>
 </html>
