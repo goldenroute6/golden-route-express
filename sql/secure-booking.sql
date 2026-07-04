@@ -39,8 +39,8 @@ grant select on table public.shipments to anon;
 
 create or replace function public.book_shipment_secure(
   booking_password text,
-  shipment_tracking_number text,
-  shipment_payload jsonb
+  shipment_payload jsonb,
+  shipment_tracking_number text
 )
 returns jsonb
 language plpgsql
@@ -86,5 +86,5 @@ begin
 end;
 $$;
 
-revoke all on function public.book_shipment_secure(text, text, jsonb) from public;
-grant execute on function public.book_shipment_secure(text, text, jsonb) to anon;
+revoke all on function public.book_shipment_secure(text, jsonb, text) from public;
+grant execute on function public.book_shipment_secure(text, jsonb, text) to anon;
