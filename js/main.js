@@ -7,6 +7,7 @@ function initializeApp() {
     setupMobileMenu();
     initializePackageStorage();
     attachEventListeners();
+    setupRevealAnimations();
 }
 
 function setupNavigation() {
@@ -145,6 +146,36 @@ function attachEventListeners() {
                 window.trackPackage();
             }
         }
+    });
+}
+
+function setupRevealAnimations() {
+    var revealElements = document.querySelectorAll('.reveal, .service-card, .why-book-card, .about-item, .contact-item');
+    if (!revealElements.length) {
+        return;
+    }
+
+    if (typeof IntersectionObserver !== 'function') {
+        revealElements.forEach(function(el) {
+            el.classList.add('is-visible');
+        });
+        return;
+    }
+
+    var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.14,
+        rootMargin: '0px 0px -50px 0px'
+    });
+
+    revealElements.forEach(function(el) {
+        observer.observe(el);
     });
 }
 

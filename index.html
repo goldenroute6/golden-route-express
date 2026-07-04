@@ -7,8 +7,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700;800;900&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css?v=20260703-4">
-    <link rel="stylesheet" href="css/responsive.css?v=20260703-4">
+    <link rel="stylesheet" href="css/styles.css?v=20260705-1">
+    <link rel="stylesheet" href="css/responsive.css?v=20260705-1">
 </head>
 <body>
     <nav class="navbar">
@@ -21,6 +21,7 @@
             </div>
             <ul class="nav-menu">
                 <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#ship" class="nav-link">Book Shipment</a></li>
                 <li><a href="#tracker" class="nav-link">Track Package</a></li>
                 <li><a href="#about" class="nav-link">About</a></li>
                 <li><a href="#contact" class="nav-link">Contact</a></li>
@@ -45,13 +46,13 @@
                 <span class="hero-badge">Real-Time Tracking</span>
             </div>
             <div class="hero-buttons">
-                <button class="cta-button" onclick="scrollToSection('tracker')">Track Package</button>
-                <button class="cta-button cta-secondary" onclick="scrollToSection('contact')">Contact Us</button>
+                <button class="cta-button" onclick="scrollToSection('ship')">Book Now</button>
+                <button class="cta-button cta-secondary" onclick="scrollToSection('tracker')">Track Package</button>
             </div>
         </div>
     </section>
 
-    <section id="ship" class="ship-section" hidden>
+    <section id="ship" class="ship-section reveal">
         <div class="container">
             <h2>Ship Your Cargo</h2>
             <p class="section-subtitle">Fast, secure, and reliable shipping to destinations worldwide</p>
@@ -168,7 +169,30 @@
         </div>
     </section>
 
-    <section id="tracker" class="tracker-section">
+    <section id="why-book" class="why-book-section reveal">
+        <div class="container">
+            <div class="why-book-head">
+                <h2>Why Book With Golden Route Express</h2>
+                <p>We are built for speed, trust, and premium handling. Every shipment is handled like high-value cargo from pickup to final doorstep delivery.</p>
+            </div>
+            <div class="why-book-grid">
+                <article class="why-book-card">
+                    <h3>Best in reliability</h3>
+                    <p>Our route logic and tracking events give customers confidence at every stage, from booking to final drop-off.</p>
+                </article>
+                <article class="why-book-card">
+                    <h3>Professional handling</h3>
+                    <p>Air and sea operations are designed for fragile, commercial, and high-priority packages with careful movement controls.</p>
+                </article>
+                <article class="why-book-card">
+                    <h3>Clear communication</h3>
+                    <p>Real tracking numbers, clear timelines, and structured transit updates make your shipping operation feel premium and dependable.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section id="tracker" class="tracker-section reveal">
         <div class="container">
             <h2>Track Your Package</h2>
             <div class="tracker-card">
@@ -230,7 +254,7 @@
         </div>
     </section>
 
-    <section id="about" class="about-section">
+    <section id="about" class="about-section reveal">
         <div class="container">
             <h2>About Golden Route Express</h2>
             <div class="about-content">
@@ -253,7 +277,7 @@
         </div>
     </section>
 
-    <section id="contact" class="contact-section">
+    <section id="contact" class="contact-section reveal">
         <div class="container">
             <h2>Contact Us</h2>
             <div class="contact-info">
@@ -286,9 +310,9 @@
         window.GRE_SUPABASE_URL = 'https://nytgmlaiecrmrnymgclm.supabase.co';
         window.GRE_SUPABASE_ANON_KEY = 'sb_publishable_iub4F08jEnUrOyplZPz1zQ_w_nSIs8m';
     </script>
-    <script src="js/data-store.js?v=20260703-3"></script>
-    <script src="js/main.js?v=20260703-3"></script>
-    <script src="js/shipping.js?v=20260703-3"></script>
-    <script src="js/tracker.js?v=20260703-3"></script>
+    <script src="js/data-store.js?v=20260705-1"></script>
+    <script src="js/main.js?v=20260705-1"></script>
+    <script src="js/shipping.js?v=20260705-1"></script>
+    <script src="js/tracker.js?v=20260705-1"></script>
 </body>
 </html>

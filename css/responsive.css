@@ -1,6 +1,7 @@
 @media (max-width: 900px) {
     .service-cards      { grid-template-columns: repeat(2, 1fr); }
     .form-columns       { grid-template-columns: repeat(2, 1fr); }
+    .why-book-grid      { grid-template-columns: repeat(2, 1fr); }
     .about-content      { grid-template-columns: repeat(2, 1fr); }
     .hero-content h1    { font-size: 3rem; }
     .tracking-visuals   { grid-template-columns: 1fr; }
@@ -14,6 +15,7 @@
     .track-button           { width: 100%; }
     .form-columns           { grid-template-columns: 1fr; }
     .service-cards          { grid-template-columns: 1fr; }
+    .why-book-grid          { grid-template-columns: 1fr; }
     .about-content          { grid-template-columns: 1fr; }
     .contact-info           { grid-template-columns: 1fr; }
     .ship-form-card         { padding: 1.5rem 1rem; }

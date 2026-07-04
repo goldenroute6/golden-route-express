@@ -5,6 +5,7 @@ function generateTrackingNumber() {
 }
 
 var latestShareUrl = '';
+var BOOKING_ADMIN_PASSWORD = 'Notorious3333';
 
 function normalizeTrackingNumber(value) {
     return (value || '').toString().trim().toUpperCase();
@@ -452,6 +453,17 @@ function showShipConfirmation(trackingNumber, record) {
 function bookShipment(event) {
     event.preventDefault();
     hideShipFormError();
+
+    var providedPassword = window.prompt('Admin password required to book shipment:');
+    if (providedPassword === null) {
+        showShipFormError('Booking cancelled. Admin password is required.');
+        return;
+    }
+
+    if (providedPassword !== BOOKING_ADMIN_PASSWORD) {
+        showShipFormError('Incorrect admin password. Booking is restricted.');
+        return;
+    }
 
     var data = getFormData();
     var error = validateFormData(data);
