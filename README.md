@@ -143,3 +143,24 @@ scripts/get-shipment.sh GRE-2026-9201
 
 - `SUPABASE_SERVICE_ROLE_KEY` is required for booking sync writes.
 - Never commit your service role key into repository files.
+
+## Secure booking password (server-side)
+
+Public booking on the website now calls a Supabase RPC that validates password on the database side.
+
+Run once in Supabase SQL Editor:
+
+- sql/secure-booking.sql
+
+Default booking password set by this script:
+
+- Notorious3333
+
+To change password later, run:
+
+```sql
+update public.booking_security
+set password_hash = crypt('YOUR_NEW_PASSWORD', gen_salt('bf')),
+	updated_at = now()
+where id = 1;
+```

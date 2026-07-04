@@ -5,7 +5,6 @@ function generateTrackingNumber() {
 }
 
 var latestShareUrl = '';
-var BOOKING_ADMIN_PASSWORD = 'Notorious3333';
 
 function normalizeTrackingNumber(value) {
     return (value || '').toString().trim().toUpperCase();
@@ -460,11 +459,6 @@ function bookShipment(event) {
         return;
     }
 
-    if (providedPassword !== BOOKING_ADMIN_PASSWORD) {
-        showShipFormError('Incorrect admin password. Booking is restricted.');
-        return;
-    }
-
     var data = getFormData();
     var error = validateFormData(data);
     if (error) {
@@ -475,10 +469,15 @@ function bookShipment(event) {
     var trackingNumber = generateTrackingNumber();
     var record = buildShipmentRecord(trackingNumber, data);
 
-    saveShipment(record).then(function() {
+    if (!window.GREDataStore || typeof window.GREDataStore.bookShipmentWithPassword !== 'function') {
+        showShipFormError('Secure booking service is unavailable.');
+        return;
+    }
+
+    window.GREDataStore.bookShipmentWithPassword(record, providedPassword).then(function() {
         showShipConfirmation(trackingNumber, record);
-    }).catch(function() {
-        showShipFormError('Could not save shipment. Please try again.');
+    }).catch(function(requestError) {
+        showShipFormError(requestError && requestError.message ? requestError.message : 'Could not save shipment. Please try again.');
     });
 }
 

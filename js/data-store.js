@@ -46,10 +46,70 @@
         }));
 
         if (!response.ok) {
-            throw new Error('Remote store request failed with status ' + response.status);
+            var errorMessage = 'Remote store request failed with status ' + response.status;
+
+            try {
+                var errorBody = await response.json();
+                if (errorBody && errorBody.message) {
+                    errorMessage = errorBody.message;
+                }
+            } catch (error) {
+                return Promise.reject(new Error(errorMessage));
+            }
+
+            throw new Error(errorMessage);
         }
 
         return response;
+    }
+
+    async function bookShipmentWithPassword(record, bookingPassword) {
+        if (!isObject(record)) {
+            throw new Error('Invalid shipment record.');
+        }
+
+        if (!bookingPassword) {
+            throw new Error('Admin password is required.');
+        }
+
+        if (!isRemoteConfigured()) {
+            throw new Error('Secure booking backend is not configured.');
+        }
+
+        var trackingNumber = normalizeTrackingNumber(record.trackingNumber);
+        if (!trackingNumber) {
+            throw new Error('Tracking number is required.');
+        }
+
+        var normalizedRecord = Object.assign({}, record, {
+            trackingNumber: trackingNumber
+        });
+
+        var response = await supabaseRequest('/rest/v1/rpc/book_shipment_secure', {
+            method: 'POST',
+            body: JSON.stringify({
+                booking_password: bookingPassword,
+                shipment_tracking_number: trackingNumber,
+                shipment_payload: normalizedRecord
+            })
+        });
+
+        var result = null;
+        try {
+            result = await response.json();
+        } catch (error) {
+            result = null;
+        }
+
+        if (result && result.ok === false) {
+            throw new Error(result.message || 'Booking request was denied.');
+        }
+
+        var localPackages = getLocalPackages();
+        localPackages[trackingNumber] = normalizedRecord;
+        saveLocalPackages(localPackages);
+
+        return result;
     }
 
     async function upsertShipment(record) {
@@ -163,6 +223,7 @@
         isRemoteConfigured: isRemoteConfigured,
         getShipment: getShipment,
         upsertShipment: upsertShipment,
+        bookShipmentWithPassword: bookShipmentWithPassword,
         seedSamplePackages: seedSamplePackages,
         getLocalPackages: getLocalPackages,
         saveLocalPackages: saveLocalPackages
