@@ -119,6 +119,22 @@ Files:
 - data/shipments.json
 - scripts/sync-shipments.sh
 - scripts/get-shipment.sh
+- scripts/book-shipment-local.sh
+
+## Book only from your MacBook
+
+If you want booking to work only on your MacBook (and never on other devices), keep the public site tracking-only and book from your local terminal using the service role key.
+
+```bash
+export SUPABASE_SERVICE_ROLE_KEY="YOUR_SERVICE_ROLE_KEY"
+scripts/book-shipment-local.sh
+```
+
+Why this is MacBook-only in practice:
+
+- The website has public booking disabled.
+- Only your local terminal with your private `SUPABASE_SERVICE_ROLE_KEY` can create bookings.
+- Other devices can still track shipments with tracking numbers.
 
 ### Booking workflow in VS Code
 
