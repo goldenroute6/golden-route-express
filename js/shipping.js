@@ -391,12 +391,18 @@ function validateFormData(data) {
 
 function showShipFormError(msg) {
     var el = document.getElementById('shipFormError');
+    if (!el) {
+        return;
+    }
     el.textContent = msg;
     el.style.display = 'block';
 }
 
 function hideShipFormError() {
     var el = document.getElementById('shipFormError');
+    if (!el) {
+        return;
+    }
     el.style.display = 'none';
 }
 
@@ -452,6 +458,9 @@ function showShipConfirmation(trackingNumber, record) {
 function bookShipment(event) {
     event.preventDefault();
     hideShipFormError();
+
+    showShipFormError('Public booking is disabled. Tracking is available for all devices.');
+    return;
 
     var providedPassword = window.prompt('Admin password required to book shipment:');
     if (providedPassword === null) {
