@@ -8,6 +8,45 @@ function initializeApp() {
     initializePackageStorage();
     attachEventListeners();
     setupRevealAnimations();
+    setupLanguageWidget();
+    setupOpsRegionRotation();
+}
+
+function setupLanguageWidget() {
+    if (typeof window.googleTranslateElementInit !== 'function') {
+        window.googleTranslateElementInit = function() {
+            if (!window.google || !window.google.translate) {
+                return;
+            }
+
+            new window.google.translate.TranslateElement({
+                pageLanguage: 'en',
+                layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false
+            }, 'google_translate_element');
+        };
+    }
+}
+
+function setupOpsRegionRotation() {
+    var regionNode = document.getElementById('opsRegion');
+    if (!regionNode) {
+        return;
+    }
+
+    var regions = [
+        'North Atlantic Corridor',
+        'Trans-Pacific Cargo Lane',
+        'Gulf-EU Air Bridge',
+        'West Africa Ocean Cluster',
+        'South Asia Express Grid'
+    ];
+    var pointer = 0;
+
+    setInterval(function() {
+        pointer = (pointer + 1) % regions.length;
+        regionNode.textContent = regions[pointer];
+    }, 5000);
 }
 
 function setupNavigation() {

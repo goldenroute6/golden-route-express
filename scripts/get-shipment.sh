@@ -7,11 +7,47 @@ if [[ $# -ne 1 ]]; then
 fi
 
 TRACKING_CODE="$1"
-SUPABASE_URL="${SUPABASE_URL:-https://nytgmlaiecrmrnymgclm.supabase.co}"
-SUPABASE_ANON_KEY="${SUPABASE_ANON_KEY:-sb_publishable_iub4F08jEnUrOyplZPz1zQ_w_nSIs8m}"
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+SHIPMENTS_FILE="$ROOT_DIR/data/shipments.json"
 
-curl -s "$SUPABASE_URL/rest/v1/shipments?tracking_number=eq.$TRACKING_CODE&select=tracking_number,payload" \
-  -H "apikey: $SUPABASE_ANON_KEY" \
-  -H "Authorization: Bearer $SUPABASE_ANON_KEY"
+if ! command -v python3 >/dev/null 2>&1; then
+  echo "Python 3 is required for lookup."
+  exit 1
+fi
+
+if [[ ! -f "$SHIPMENTS_FILE" ]]; then
+  echo "Shipments file not found: $SHIPMENTS_FILE"
+  exit 1
+fi
+
+python3 - "$SHIPMENTS_FILE" "$TRACKING_CODE" <<'PY'
+import json
+import sys
+
+shipments_file = sys.argv[1]
+tracking = str(sys.argv[2]).strip().upper()
+
+if not tracking:
+    print("Tracking code is required.", file=sys.stderr)
+    sys.exit(1)
+
+try:
+    with open(shipments_file, "r", encoding="utf-8") as f:
+        data = json.load(f)
+except Exception:
+    print("Failed to read data/shipments.json", file=sys.stderr)
+    sys.exit(1)
+
+if not isinstance(data, list):
+    print("data/shipments.json must be a JSON array.", file=sys.stderr)
+    sys.exit(1)
+
+matches = [
+    row for row in data
+    if str((row or {}).get("tracking_number", "")).strip().upper() == tracking
+]
+
+print(json.dumps(matches, indent=2))
+PY
 
 echo

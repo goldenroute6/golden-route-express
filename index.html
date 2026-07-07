@@ -25,6 +25,13 @@
                 <li><a href="#about" class="nav-link">About</a></li>
                 <li><a href="#contact" class="nav-link">Contact</a></li>
             </ul>
+            <div class="nav-tools">
+                <span class="ops-live-pill"><span class="dot"></span>Live Ops</span>
+                <div class="translate-shell">
+                    <span class="translate-label">Language</span>
+                    <div id="google_translate_element"></div>
+                </div>
+            </div>
             <div class="hamburger">
                 <span></span>
                 <span></span>
@@ -47,6 +54,48 @@
             <div class="hero-buttons">
                 <button class="cta-button" onclick="scrollToSection('tracker')">Track Package</button>
                 <button class="cta-button cta-secondary" onclick="scrollToSection('about')">About Us</button>
+            </div>
+
+            <div class="ops-ticker" aria-label="Operational highlights">
+                <div class="ops-ticker-track">
+                    <span>112 flights monitored today</span>
+                    <span>24 seaport departures in progress</span>
+                    <span>98.7% on-time delivery this week</span>
+                    <span>46 active customs-clearance lanes</span>
+                    <span>112 flights monitored today</span>
+                    <span>24 seaport departures in progress</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="network-intel reveal">
+        <div class="container">
+            <div class="network-intel-head">
+                <h2>Global Network Intelligence</h2>
+                <p>Our operations control team tracks every handoff from origin gate to final-mile dispatch in real time.</p>
+            </div>
+            <div class="network-intel-grid">
+                <article class="network-card">
+                    <h3>Current Operational Region</h3>
+                    <p id="opsRegion">North Atlantic Corridor</p>
+                    <small>Updated every 15 minutes</small>
+                </article>
+                <article class="network-card">
+                    <h3>Average Customs Clearance</h3>
+                    <p><strong>2h 18m</strong></p>
+                    <small>Across major partner hubs</small>
+                </article>
+                <article class="network-card">
+                    <h3>Active Partner Warehouses</h3>
+                    <p><strong>138</strong> facilities</p>
+                    <small>Temperature-safe and bonded</small>
+                </article>
+                <article class="network-card emphasis">
+                    <h3>Reliability Confidence Score</h3>
+                    <p><strong>99.1%</strong></p>
+                    <small>Based on current route health</small>
+                </article>
             </div>
         </div>
     </section>
@@ -199,13 +248,10 @@
         </div>
     </footer>
 
-    <script>
-        window.GRE_SUPABASE_URL = 'https://nytgmlaiecrmrnymgclm.supabase.co';
-        window.GRE_SUPABASE_ANON_KEY = 'sb_publishable_iub4F08jEnUrOyplZPz1zQ_w_nSIs8m';
-    </script>
     <script src="js/data-store.js?v=20260707-1"></script>
     <script src="js/main.js?v=20260707-1"></script>
     <script src="js/shipping.js?v=20260707-1"></script>
     <script src="js/tracker.js?v=20260707-1"></script>
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>

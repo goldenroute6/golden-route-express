@@ -3,34 +3,42 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 SHIPMENTS_FILE="$ROOT_DIR/data/shipments.json"
-SUPABASE_URL="${SUPABASE_URL:-https://nytgmlaiecrmrnymgclm.supabase.co}"
-SUPABASE_SERVICE_ROLE_KEY="${SUPABASE_SERVICE_ROLE_KEY:-}"
-
-if [[ -z "$SUPABASE_SERVICE_ROLE_KEY" ]]; then
-  echo "Missing SUPABASE_SERVICE_ROLE_KEY environment variable."
-  echo "Set it in terminal before running this script."
-  exit 1
-fi
 
 if [[ ! -f "$SHIPMENTS_FILE" ]]; then
   echo "Missing shipments file: $SHIPMENTS_FILE"
   exit 1
 fi
 
-HTTP_STATUS=$(curl -s -o /tmp/gre_sync_response.json -w "%{http_code}" \
-  -X POST "$SUPABASE_URL/rest/v1/shipments" \
-  -H "Content-Type: application/json" \
-  -H "apikey: $SUPABASE_SERVICE_ROLE_KEY" \
-  -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
-  -H "Prefer: resolution=merge-duplicates,return=representation" \
-  --data-binary "@$SHIPMENTS_FILE")
-
-if [[ "$HTTP_STATUS" == "200" || "$HTTP_STATUS" == "201" ]]; then
-  echo "Sync successful."
-  cat /tmp/gre_sync_response.json
-  exit 0
+if ! command -v python3 >/dev/null 2>&1; then
+  echo "Python 3 is required for validation."
+  exit 1
 fi
 
-echo "Sync failed with HTTP status: $HTTP_STATUS"
-cat /tmp/gre_sync_response.json
-exit 1
+python3 - "$SHIPMENTS_FILE" <<'PY'
+import json
+import sys
+
+shipments_file = sys.argv[1]
+
+try:
+    with open(shipments_file, "r", encoding="utf-8") as f:
+        data = json.load(f)
+except Exception:
+    print("Invalid JSON in data/shipments.json", file=sys.stderr)
+    sys.exit(1)
+
+if not isinstance(data, list):
+    print("data/shipments.json must be a JSON array.", file=sys.stderr)
+    sys.exit(1)
+
+invalid = [
+    row for row in data
+    if not isinstance(row, dict) or not row.get("tracking_number") or not isinstance(row.get("payload"), dict)
+]
+
+if invalid:
+    print(f"Validation failed: {len(invalid)} invalid record(s).", file=sys.stderr)
+    sys.exit(1)
+
+print(f"Validation successful: {len(data)} shipment record(s) ready.")
+PY

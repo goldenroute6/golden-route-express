@@ -102,47 +102,67 @@
             <ul class="nav-menu">
                 <li><a href="./index.html#tracker" class="nav-link active">Public Tracker</a></li>
             </ul>
+            <div class="nav-tools">
+                <div class="translate-shell">
+                    <span class="translate-label">Language</span>
+                    <div id="google_translate_element"></div>
+                </div>
+            </div>
         </div>
     </nav>
 
     <main class="admin-wrap">
         <div class="admin-shell">
             <section class="admin-head">
-                <h1>Admin Booking (Simple Mode)</h1>
-                <p>Booking is managed directly in Supabase Table Editor. Public website is tracking only.</p>
+                <h1>Admin Booking In VS Code</h1>
+                <p>Your admin section is now the VS Code terminal workflow. Public website stays tracking only.</p>
             </section>
 
             <section class="admin-card">
                 <h3>Step 1</h3>
                 <ol class="admin-list">
-                    <li>Open your Supabase project: <strong>nytgmlaiecrmrnymgclm</strong></li>
-                    <li>Go to <strong>Table Editor</strong>.</li>
-                    <li>Open table: <strong>shipments</strong>.</li>
-                    <li>Click <strong>Insert row</strong>.</li>
+                    <li>Open VS Code terminal inside this project.</li>
+                    <li>Run the admin console menu.</li>
                 </ol>
+                <div class="admin-code">scripts/admin-console.sh</div>
                 <div class="admin-actions">
-                    <a class="cta-button" href="https://supabase.com/dashboard" target="_blank" rel="noopener">Open Supabase Dashboard</a>
                     <a class="cta-button cta-secondary" href="./index.html#tracker">Open Public Tracker</a>
                 </div>
             </section>
 
             <section class="admin-card">
                 <h3>Step 2</h3>
-                <p>Fill these two columns in each row:</p>
+                <p>Run the admin console menu:</p>
+                <div class="admin-code">scripts/admin-console.sh</div>
+                <p>Inside the menu you can:</p>
                 <ul class="admin-list">
-                    <li><strong>tracking_number</strong>: example GRE-2026-9001</li>
-                    <li><strong>payload</strong>: paste shipment JSON template</li>
+                    <li>Book shipment directly from terminal prompts</li>
+                    <li>Validate local shipment file format</li>
+                    <li>Lookup any tracking number</li>
                 </ul>
-                <p>Template file in repo:</p>
-                <div class="admin-code">shipment-template.json</div>
             </section>
 
             <section class="admin-card">
                 <h3>Step 3</h3>
-                <p>Save row, then test from any phone in public tracker:</p>
+                <p>After booking, test from any phone in public tracker:</p>
                 <div class="admin-code">https://goldenroute6.github.io/golden-route-express/</div>
             </section>
         </div>
     </main>
+
+    <script>
+        function googleTranslateElementInit() {
+            if (!window.google || !window.google.translate) {
+                return;
+            }
+
+            new window.google.translate.TranslateElement({
+                pageLanguage: 'en',
+                layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+    </script>
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
