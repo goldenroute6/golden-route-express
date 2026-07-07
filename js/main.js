@@ -13,18 +13,142 @@ function initializeApp() {
 }
 
 function setupLanguageWidget() {
-    if (typeof window.googleTranslateElementInit !== 'function') {
-        window.googleTranslateElementInit = function() {
-            if (!window.google || !window.google.translate) {
-                return;
-            }
+    var selector = document.getElementById('languageSwitcher');
+    if (!selector) {
+        return;
+    }
 
-            new window.google.translate.TranslateElement({
-                pageLanguage: 'en',
-                layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
-                autoDisplay: false
-            }, 'google_translate_element');
-        };
+    var savedLanguage = 'en';
+    try {
+        savedLanguage = localStorage.getItem('gre_language') || 'en';
+    } catch (error) {
+        savedLanguage = 'en';
+    }
+
+    selector.value = savedLanguage;
+    applyLanguage(savedLanguage);
+
+    selector.addEventListener('change', function() {
+        var lang = selector.value || 'en';
+
+        try {
+            localStorage.setItem('gre_language', lang);
+        } catch (error) {
+            // Ignore storage errors and still apply selection for this session.
+        }
+
+        applyLanguage(lang);
+    });
+}
+
+function applyLanguage(lang) {
+    var translations = {
+        en: {
+            home: 'Home',
+            track: 'Track Package',
+            about: 'About',
+            contact: 'Contact',
+            liveOps: 'Live Ops',
+            heroEyebrow: 'Global Freight Solutions',
+            heroText: 'Ship and track your cargo by air and sea - fast, secure, and reliable delivery worldwide.',
+            trackerTitle: 'Track Your Package',
+            search: 'Search'
+        },
+        es: {
+            home: 'Inicio',
+            track: 'Rastrear Paquete',
+            about: 'Acerca de',
+            contact: 'Contacto',
+            liveOps: 'Operaciones Activas',
+            heroEyebrow: 'Soluciones Globales de Carga',
+            heroText: 'Envia y rastrea tu carga por aire y mar con entrega rapida, segura y confiable en todo el mundo.',
+            trackerTitle: 'Rastrea Tu Paquete',
+            search: 'Buscar'
+        },
+        fr: {
+            home: 'Accueil',
+            track: 'Suivre Colis',
+            about: 'A Propos',
+            contact: 'Contact',
+            liveOps: 'Operations En Direct',
+            heroEyebrow: 'Solutions Mondiales de Fret',
+            heroText: 'Expediez et suivez votre cargaison par air et mer avec une livraison rapide, sure et fiable dans le monde entier.',
+            trackerTitle: 'Suivez Votre Colis',
+            search: 'Rechercher'
+        },
+        ar: {
+            home: 'الرئيسية',
+            track: 'تتبع الشحنة',
+            about: 'حول',
+            contact: 'اتصل',
+            liveOps: 'العمليات المباشرة',
+            heroEyebrow: 'حلول شحن عالمية',
+            heroText: 'اشحن وتتبع الشحنة جوا وبحرا بسرعة وامان وموثوقية حول العالم.',
+            trackerTitle: 'تتبع شحنتك',
+            search: 'بحث'
+        },
+        zh: {
+            home: '主页',
+            track: '包裹追踪',
+            about: '关于我们',
+            contact: '联系我们',
+            liveOps: '实时运营',
+            heroEyebrow: '全球货运解决方案',
+            heroText: '通过空运和海运快速安全地追踪您的货物，覆盖全球。',
+            trackerTitle: '追踪您的包裹',
+            search: '搜索'
+        },
+        pt: {
+            home: 'Inicio',
+            track: 'Rastrear Pacote',
+            about: 'Sobre',
+            contact: 'Contato',
+            liveOps: 'Operacoes Ao Vivo',
+            heroEyebrow: 'Solucoes Globais de Carga',
+            heroText: 'Envie e rastreie sua carga por via aerea e maritima com entrega rapida, segura e confiavel no mundo todo.',
+            trackerTitle: 'Rastreie Seu Pacote',
+            search: 'Pesquisar'
+        }
+    };
+
+    var t = translations[lang] || translations.en;
+
+    document.documentElement.lang = lang;
+    if (lang === 'ar') {
+        document.body.setAttribute('dir', 'rtl');
+    } else {
+        document.body.setAttribute('dir', 'ltr');
+    }
+
+    var navLinks = document.querySelectorAll('.nav-link');
+    if (navLinks[0]) { navLinks[0].textContent = t.home; }
+    if (navLinks[1]) { navLinks[1].textContent = t.track; }
+    if (navLinks[2]) { navLinks[2].textContent = t.about; }
+    if (navLinks[3]) { navLinks[3].textContent = t.contact; }
+
+    var liveOps = document.querySelector('.ops-live-pill');
+    if (liveOps) {
+        liveOps.innerHTML = '<span class="dot"></span>' + t.liveOps;
+    }
+
+    var heroEyebrow = document.querySelector('.hero-eyebrow');
+    if (heroEyebrow) {
+        heroEyebrow.textContent = t.heroEyebrow;
+    }
+
+    var heroText = document.querySelector('.hero-content p');
+    if (heroText) {
+        heroText.textContent = t.heroText;
+    }
+
+    var trackerTitle = document.querySelector('#tracker h2');
+    if (trackerTitle) {
+        trackerTitle.textContent = t.trackerTitle;
+    }
+
+    var searchBtn = document.querySelector('.tracker-card .track-button');
+    if (searchBtn) {
+        searchBtn.textContent = t.search;
     }
 }
 

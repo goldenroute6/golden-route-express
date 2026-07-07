@@ -104,8 +104,15 @@
             </ul>
             <div class="nav-tools">
                 <div class="translate-shell">
-                    <span class="translate-label">Language</span>
-                    <div id="google_translate_element"></div>
+                    <label class="translate-label" for="languageSwitcher">Language</label>
+                    <select id="languageSwitcher" class="language-select" aria-label="Select language">
+                        <option value="en">English</option>
+                        <option value="es">Espanol</option>
+                        <option value="fr">Francais</option>
+                        <option value="ar">Arabic</option>
+                        <option value="zh">Chinese</option>
+                        <option value="pt">Portuguese</option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -150,19 +157,6 @@
         </div>
     </main>
 
-    <script>
-        function googleTranslateElementInit() {
-            if (!window.google || !window.google.translate) {
-                return;
-            }
-
-            new window.google.translate.TranslateElement({
-                pageLanguage: 'en',
-                layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
-                autoDisplay: false
-            }, 'google_translate_element');
-        }
-    </script>
-    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script src="js/main.js?v=20260707-3"></script>
 </body>
 </html>

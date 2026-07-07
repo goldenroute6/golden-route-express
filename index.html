@@ -28,8 +28,15 @@
             <div class="nav-tools">
                 <span class="ops-live-pill"><span class="dot"></span>Live Ops</span>
                 <div class="translate-shell">
-                    <span class="translate-label">Language</span>
-                    <div id="google_translate_element"></div>
+                    <label class="translate-label" for="languageSwitcher">Language</label>
+                    <select id="languageSwitcher" class="language-select" aria-label="Select language">
+                        <option value="en">English</option>
+                        <option value="es">Espanol</option>
+                        <option value="fr">Francais</option>
+                        <option value="ar">Arabic</option>
+                        <option value="zh">Chinese</option>
+                        <option value="pt">Portuguese</option>
+                    </select>
                 </div>
             </div>
             <div class="hamburger">
@@ -249,9 +256,8 @@
     </footer>
 
     <script src="js/data-store.js?v=20260707-2"></script>
-    <script src="js/main.js?v=20260707-2"></script>
+    <script src="js/main.js?v=20260707-3"></script>
     <script src="js/shipping.js?v=20260707-2"></script>
     <script src="js/tracker.js?v=20260707-3"></script>
-    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
