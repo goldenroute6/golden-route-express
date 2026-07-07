@@ -328,7 +328,7 @@ async function trackPackage() {
     showTrackingResult(hydratedRecord);
 }
 
-function bootstrapSharedTracking() {
+async function bootstrapSharedTracking() {
     importSharedShipment(window.location.href);
 
     var trackingNumber = getTrackingNumberFromUrl();
@@ -342,7 +342,19 @@ function bootstrapSharedTracking() {
     }
 
     trackingInput.value = trackingNumber;
-    trackPackage();
+
+    for (var attempt = 0; attempt < 4; attempt++) {
+        await trackPackage();
+
+        var hasResults = document.getElementById('trackingResults').style.display === 'block';
+        if (hasResults) {
+            return;
+        }
+
+        await new Promise(function(resolve) {
+            setTimeout(resolve, 250);
+        });
+    }
 }
 
 window.trackPackage = trackPackage;
